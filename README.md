@@ -20,4 +20,4 @@ BytePayments is a self hosted crypto payment gateway for accepting crypto funds 
 
 
 
-### NOTE : This project has been tested internally and currently in alpha. Use at your own risk cause this can cause fund loss.
+### NOTE : This project has been tested internally and currently in alpha. Use at your own risk cause this can cause fund loss. Also if Crypto Currency maybe banned or not recognized in your country so use it at your own risk, we are not responsible for any loss or legal drama.
