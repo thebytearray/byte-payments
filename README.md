@@ -10,7 +10,7 @@ BytePayments is a self hosted crypto payment gateway for accepting crypto funds 
 6. Set the percentage of amount that is okay to be paid to mark the order as completed (eg : 95% payment marks the order as completed).
 7. Handle Overpaid and Underpaid senario.
 3. Send payment invoice directly to the users email after done.
-4. After payment done move the funds to your main master wallet (Gas Fees Auto Calculated).
+4. After payment done sweep the funds to your main master wallet (Gas Fees Auto Calculated).
 
 ## Tech Stack :
 1. Go (the goat).
@@ -18,10 +18,11 @@ BytePayments is a self hosted crypto payment gateway for accepting crypto funds 
 3. Gorm (ORM library).
 4. MySQL the OG DB.
 
-### Contributing Guide : Yeah it's open for contribution but for existing bug or security issue fix. We do not expect any major breaking change right now.For example a new currency, but if you want to do that first discuss in the issue thread.
+#### Contributing Guide : Yeah it's open for contribution but for existing bug or security issue fix. We do not expect any major breaking change right now.For example a new currency, but if you want to do that first discuss in the issue thread.
 
-### Message For Devs : Please do not open a issue like this "Hey, the project not following x and y framework guidelines, best practices`" cause we don't care as long as it's performance effecient and works. Always open to take suggestion related to performance improvement. Thanks
+> [!NOTE]
+> Please do not open a issue like this "Hey, the project not following x and y framework guidelines, best practices" cause we don't care as long as it's performance effecient and works. Always open to take suggestion related to performance improvement. Thanks
 
 
-
-### NOTE : This project has been tested internally and currently in alpha. Use at your own risk cause this can cause fund loss. Also if Crypto Currency maybe banned or not recognized in your country so use it at your own risk, we are not responsible for any loss or legal drama.
+> [!CAUTION]
+> This project has been tested internally and currently in alpha. Use at your own risk cause this can cause fund loss. Also if Crypto Currency maybe banned or not recognized in your country so use it at your own risk, we are not responsible for any loss or legal drama.
