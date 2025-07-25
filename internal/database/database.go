@@ -6,13 +6,14 @@ import (
 
 	"github.com/TheByteArray/BytePayments/config"
 	"github.com/TheByteArray/BytePayments/model"
+	"github.com/google/uuid"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-func Connect() {
+func NewConnection() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		config.Cfg.DATABASE_USER,
 		config.Cfg.DATABASE_PASS,
@@ -39,4 +40,51 @@ func Connect() {
 
 	log.Println("Connected to database successfully.")
 
+}
+
+func SeedDatabase() {
+
+	plans := []*model.Plan{
+		{
+			ID:           uuid.NewString(),
+			Name:         "Basic",
+			Description:  "Basic plan",
+			PriceUSD:     1.00,
+			DurationDays: 7,
+		},
+		{
+			ID:           uuid.NewString(),
+			Name:         "Pro",
+			Description:  "Pro plan",
+			PriceUSD:     10.00,
+			DurationDays: 30,
+		},
+		{
+			ID:           uuid.NewString(),
+			Name:         "Ultimate",
+			Description:  "Ultimate plan",
+			PriceUSD:     30.00,
+			DurationDays: 30,
+		},
+	}
+
+	currencies := []model.Currency{
+		{
+			Code:         "TRX",
+			Name:         "Tron",
+			Network:      "TRC20", // show TRC20 for clarity
+			IsToken:      false,
+			ContractAddr: "",
+			Enabled:      true,
+		},
+	}
+	plansRes := DB.Create(plans)
+	currenciesRes := DB.Create(&currencies)
+	if plansRes.Error != nil {
+		log.Println(plansRes.Error)
+	}
+
+	if currenciesRes.Error != nil {
+		log.Println(currenciesRes.Error)
+	}
 }

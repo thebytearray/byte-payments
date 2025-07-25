@@ -35,7 +35,7 @@ type Config struct {
 
 var Cfg *Config
 
-func LoadConfig() {
+func NewConfig() {
 	// load the env
 	err := godotenv.Load("../.env")
 	if err != nil {
