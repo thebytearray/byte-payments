@@ -20,6 +20,12 @@ BytePayments is a self hosted crypto payment gateway for accepting crypto funds 
 
 #### Contributing Guide : Yeah it's open for contribution but for existing bug or security issue fix. We do not expect any major breaking change right now.For example a new currency, but if you want to do that first discuss in the issue thread.
 
+
+> [!TIP]
+> For testing the gateway first change the enviroment to development `APP_ENV=development` and when
+> switching to production `APP_ENV=production`. For testing we will use `grpc.shasta.trongrid.io:50051`
+> and if you want to get trx for testing first generate a wallet and go to here to refill with test trx funds (it's not real btw) [shasta](https://shasta.tronex.io/join/getJoinPage)
+
 > [!NOTE]
 > Please do not open a issue like this "Hey, the project not following x and y framework guidelines, best practices" cause we don't care as long as it's performance effecient and works. Always open to take suggestion related to performance improvement. Thanks
 
