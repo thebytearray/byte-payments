@@ -1,5 +1,0 @@
-package wallet
-
-func sendTrx() {
-
-}

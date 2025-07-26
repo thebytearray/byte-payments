@@ -1,9 +1,9 @@
 package route
 
 import (
-	"github.com/TheByteArray/BytePayments/controller"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
+	"github.com/thebytearray/BytePayments/controller"
 )
 
 func NewRouter() *fiber.App {

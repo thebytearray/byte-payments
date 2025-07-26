@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/TheByteArray/BytePayments/config"
-	"github.com/TheByteArray/BytePayments/model"
 	"github.com/google/uuid"
+	"github.com/thebytearray/BytePayments/config"
+	"github.com/thebytearray/BytePayments/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

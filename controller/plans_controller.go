@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/TheByteArray/BytePayments/dto"
-	"github.com/TheByteArray/BytePayments/service"
 	"github.com/gofiber/fiber/v2"
+	"github.com/thebytearray/BytePayments/dto"
+	"github.com/thebytearray/BytePayments/service"
 )
 
 // GetPlansHandler godoc

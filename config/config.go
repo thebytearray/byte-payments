@@ -24,6 +24,8 @@ type Config struct {
 	TRX_HOT_WALLET_ADDRESS    string
 	TRX_WALLET_ENCRYPTION_KEY string
 	TRON_GRID_API_KEY         string
+	TRON_GRPC_MAINNET         string
+	TRON_GRPC_TESTNET         string
 	//emailing config stuff
 	EMAIL_SMTP_HOST string
 	EMAIL_SMTP_PORT int
@@ -63,6 +65,8 @@ func NewConfig() {
 		TRX_HOT_WALLET_ADDRESS:    os.Getenv("TRX_HOT_WALLET_ADDRESS"),
 		TRX_WALLET_ENCRYPTION_KEY: os.Getenv("TRX_WALLET_ENCRYPTION_KEY"),
 		TRON_GRID_API_KEY:         os.Getenv("TRON_GRID_API_KEY"),
+		TRON_GRPC_MAINNET:         os.Getenv("TRON_GRPC_MAINNET"),
+		TRON_GRPC_TESTNET:         os.Getenv("TRON_GRPC_TESTNET"),
 
 		EMAIL_SMTP_HOST: os.Getenv("EMAIL_SMTP_HOST"),
 		EMAIL_SMTP_PORT: port,

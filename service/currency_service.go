@@ -5,6 +5,7 @@ import (
 	"github.com/thebytearray/BytePayments/repository"
 )
 
-func GetPlans() ([]model.Plan, error) {
-	return repository.GetPlans()
+func GetCurrencies() ([]model.Currency, error) {
+
+	return repository.GetCurrencies()
 }

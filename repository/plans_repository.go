@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/TheByteArray/BytePayments/internal/database"
-	"github.com/TheByteArray/BytePayments/model"
+	"github.com/thebytearray/BytePayments/internal/database"
+	"github.com/thebytearray/BytePayments/model"
 )
 
 func GetPlans() ([]model.Plan, error) {
