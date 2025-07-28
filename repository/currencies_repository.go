@@ -1,14 +1,24 @@
 package repository
 
 import (
-	"github.com/thebytearray/BytePayments/internal/database"
 	"github.com/thebytearray/BytePayments/model"
+	"gorm.io/gorm"
 )
 
-func GetCurrencies() ([]model.Currency, error) {
+type CurrenciesRepository interface {
+	GetCurrencies() ([]model.Currency, error)
+}
+
+type currenciesRepository struct {
+	db *gorm.DB
+}
+
+func NewCurrenciesRepository(db *gorm.DB) CurrenciesRepository {
+	return &currenciesRepository{db}
+}
+
+func (r *currenciesRepository) GetCurrencies() ([]model.Currency, error) {
 	var currencies []model.Currency
-
-	result := database.DB.Find(&currencies)
-
-	return currencies, result.Error
+	res := r.db.Find(&currencies)
+	return currencies, res.Error
 }

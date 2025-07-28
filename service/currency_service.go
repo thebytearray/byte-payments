@@ -5,7 +5,18 @@ import (
 	"github.com/thebytearray/BytePayments/repository"
 )
 
-func GetCurrencies() ([]model.Currency, error) {
+type CurrenciesService interface {
+	GetCurrencies() ([]model.Currency, error)
+}
 
-	return repository.GetCurrencies()
+type currenciesService struct {
+	repo repository.CurrenciesRepository
+}
+
+func NewCurrenciesService(repo repository.CurrenciesRepository) CurrenciesService {
+	return &currenciesService{repo}
+}
+
+func (s *currenciesService) GetCurrencies() ([]model.Currency, error) {
+	return s.repo.GetCurrencies()
 }

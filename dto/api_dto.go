@@ -1,5 +1,9 @@
 package dto
 
+import (
+	"net/http"
+)
+
 type STATUS string
 
 var (
@@ -14,4 +18,25 @@ type ApiResponse struct {
 	Error      string `json:"error,omitempty"`
 	Message    string `json:"message"`
 	Data       any    `json:"data"`
+}
+
+func NewError(message string, err error) ApiResponse {
+
+	return ApiResponse{
+		Status:     string(ERROR),
+		StatusCode: http.StatusExpectationFailed,
+		Error:      err.Error(),
+		Message:    message,
+		Data:       nil,
+	}
+}
+
+func NewSuccess(message string, data any) ApiResponse {
+	return ApiResponse{
+		Status:     string(OK),
+		StatusCode: http.StatusOK,
+		Error:      "",
+		Message:    message,
+		Data:       data,
+	}
 }

@@ -1,34 +1,18 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/thebytearray/BytePayments/dto"
+	"github.com/thebytearray/BytePayments/internal/database"
+	"github.com/thebytearray/BytePayments/repository"
 	"github.com/thebytearray/BytePayments/service"
 )
 
 func GetCurrenciesHandler(ctx *fiber.Ctx) error {
-	currencies, err := service.GetCurrencies()
-
+	currencyService := service.NewCurrenciesService(repository.NewCurrenciesRepository(database.DB))
+	currencies, err := currencyService.GetCurrencies()
 	if err != nil {
-		return ctx.JSON(
-			dto.ApiResponse{
-				Status:     string(dto.ERROR),
-				StatusCode: http.StatusNotFound,
-				Message:    "Currencies not found",
-				Data:       nil,
-				Error:      err.Error(),
-			},
-		)
+		return ctx.JSON(dto.NewError("Currencies not found", err))
 	}
-
-	return ctx.JSON(
-		dto.ApiResponse{
-			Status:     string(dto.OK),
-			StatusCode: http.StatusOK,
-			Message:    "Currencies fetched successfully",
-			Data:       currencies,
-		},
-	)
+	return ctx.JSON(dto.NewSuccess("Currencies fetched successfully", currencies))
 }
