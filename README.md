@@ -18,6 +18,7 @@ BytePayments is a self hosted crypto payment gateway for accepting crypto funds 
 3. Gorm (ORM library).
 4. MySQL the OG DB.
 5. Swagger (for api docs).
+6. Air (for live reload)
 
 #### Contributing Guide : Yeah it's open for contribution but for existing bug or security issue fix. We do not expect any major breaking change right now.For example a new currency, but if you want to do that first discuss in the issue thread.
 
