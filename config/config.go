@@ -39,7 +39,7 @@ var Cfg *Config
 
 func NewConfig() {
 	// load the env
-	err := godotenv.Load("../.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Printf("Failed to load env, %v", err)
 	}

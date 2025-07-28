@@ -11,19 +11,23 @@ const (
 )
 
 type Payment struct {
-	ID            string        `gorm:"type:char(36);primaryKey"`
-	PlanID        string        `gorm:"not null"`
-	Plan          Plan          `gorm:"foreignKey:PlanID"`
-	CurrencyCode  string        `gorm:"size:10;not null"`
-	Currency      Currency      `gorm:"foreignKey:CurrencyCode"`
-	AmountUSD     float64       `gorm:"not null"`
-	AmountTRX     float64       `gorm:"not null"`
-	WalletAddress string        `gorm:"not null;unique"`
-	WalletSecret  string        `gorm:"type:text;not null"`
-	UserEmail     string        `gorm:"not null"`
-	Status        PaymentStatus `gorm:"type:enum('pending','completed','cancelled');default:'pending'"`
+	ID     string `gorm:"type:char(36);primaryKey"`
+	PlanID string `gorm:"not null"`          // FK field
+	Plan   Plan   `gorm:"foreignKey:PlanID"` // Assoc
+
+	WalletID string `gorm:"not null"`            // FK field
+	Wallet   Wallet `gorm:"foreignKey:WalletID"` // Assoc
+
+	CurrencyCode string   `gorm:"size:10;not null"`                        // FK field
+	Currency     Currency `gorm:"foreignKey:CurrencyCode;references:Code"` // Assoc
+
+	AmountUSD float64 `gorm:"not null"`
+	AmountTRX float64 `gorm:"not null"`
+	UserEmail string  `gorm:"not null"`
+
+	Status        PaymentStatus `gorm:"type:varchar(20);default:'pending'"` // enum-like string
 	PaidAmountTRX float64       `gorm:"default:0"`
-	IsSwept       bool          `gorm:"default:false"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
