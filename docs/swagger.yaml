@@ -42,6 +42,29 @@ paths:
       summary: Get all available currencies
       tags:
       - currencies
+  /api/v1/payments/{id}/cancel:
+    patch:
+      description: Cancels a payment that has been created before
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Cancel a created payment
+      tags:
+      - cancel
   /api/v1/payments/create:
     post:
       description: Creates a payment in the database and returns payment details

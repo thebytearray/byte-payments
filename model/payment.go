@@ -11,7 +11,7 @@ const (
 )
 
 type Payment struct {
-	ID     string `gorm:"type:char(36);primaryKey"`
+	ID     string `gorm:"type:char(27);primaryKey"`
 	PlanID string `gorm:"not null"`          // FK field
 	Plan   Plan   `gorm:"foreignKey:PlanID"` // Assoc
 

@@ -48,6 +48,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rjeczalik/notify v0.9.3 // indirect
+	github.com/segmentio/ksuid v1.0.4 // indirect
 	github.com/shengdoushi/base58 v1.0.0 // indirect
 	github.com/swaggo/files/v2 v2.0.2 // indirect
 	github.com/tyler-smith/go-bip39 v1.1.0 // indirect

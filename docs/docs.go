@@ -78,6 +78,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/payments/{id}/cancel": {
+            "patch": {
+                "description": "Cancels a payment that has been created before",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cancel"
+                ],
+                "summary": "Cancel a created payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans": {
             "get": {
                 "description": "Returns a list of all subscription plans",

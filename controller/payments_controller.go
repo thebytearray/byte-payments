@@ -49,6 +49,15 @@ func CreatePaymentHandler(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(dto.NewSuccess("Payment created", resp))
 }
 
+// CancelPaymentHandler godoc
+// @Summary      Cancel a created payment
+// @Description  Cancels a payment that has been created before
+// @Tags         cancel
+// @Param        id path string true "Payment ID"
+// @Produce      json
+// @Success      200  {object}  dto.ApiResponse
+// @Failure      404  {object}  dto.ApiResponse
+// @Router       /api/v1/payments/{id}/cancel [patch]
 func CancelPaymentHandler(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	paymentService := service.NewPaymentService(repository.NewPaymentRepository(database.DB))

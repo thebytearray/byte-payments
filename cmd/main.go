@@ -12,7 +12,7 @@ func main() {
 	config.NewConfig()
 	database.NewConnection()
 	tron.NewClient()
-	//	database.SeedDatabase()
+	//database.SeedDatabase()
 	//	log.Println(tron.ConvertUSDToTRX(10.00))
 	app := route.NewRouter()
 	app.Listen(":8080")

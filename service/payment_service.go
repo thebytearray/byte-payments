@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/thebytearray/BytePayments/dto"
 	"github.com/thebytearray/BytePayments/internal/tron"
 	"github.com/thebytearray/BytePayments/internal/util"
@@ -107,7 +106,7 @@ func (s *paymentService) CreatePayment(ctx context.Context, body dto.CreatePayme
 
 		newWallet := model.Wallet{
 
-			ID:            uuid.NewString(),
+			ID:            util.GenerateUniqueID(),
 			Email:         body.Email,
 			WalletAddress: walletAddr,
 			WalletSecret:  encKey,
@@ -123,7 +122,7 @@ func (s *paymentService) CreatePayment(ctx context.Context, body dto.CreatePayme
 	}
 
 	payment := model.Payment{
-		ID:            uuid.NewString(),
+		ID:            util.GenerateUniqueID(),
 		PlanID:        plan.ID,
 		AmountUSD:     plan.PriceUSD,
 		WalletID:      walletID,
@@ -139,11 +138,16 @@ func (s *paymentService) CreatePayment(ctx context.Context, body dto.CreatePayme
 	if err != nil {
 		return dto.CreatePaymentResponse{}, fmt.Errorf("failed to create payment : %w", err)
 	}
-
+	//generate a qr
+	base64Image, err := util.GenerateQRCodeBase64(wallet.WalletAddress)
+	if err != nil {
+		return dto.CreatePaymentResponse{}, fmt.Errorf("failed to create qr : %w", err)
+	}
 	return dto.CreatePaymentResponse{
 		PaymentId:        payment.ID,
 		PlanId:           plan.ID,
 		Email:            body.Email,
+		QrImage:          base64Image,
 		TrxAmount:        amountTrx,
 		TrxWalletAddress: wallet.WalletAddress,
 	}, nil

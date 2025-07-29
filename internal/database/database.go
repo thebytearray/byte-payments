@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/google/uuid"
 	"github.com/thebytearray/BytePayments/config"
+	"github.com/thebytearray/BytePayments/internal/util"
 	"github.com/thebytearray/BytePayments/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -46,21 +46,21 @@ func SeedDatabase() {
 
 	plans := []*model.Plan{
 		{
-			ID:           uuid.NewString(),
+			ID:           util.GenerateUniqueID(),
 			Name:         "Basic",
 			Description:  "Basic plan",
 			PriceUSD:     1.00,
 			DurationDays: 7,
 		},
 		{
-			ID:           uuid.NewString(),
+			ID:           util.GenerateUniqueID(),
 			Name:         "Pro",
 			Description:  "Pro plan",
 			PriceUSD:     10.00,
 			DurationDays: 30,
 		},
 		{
-			ID:           uuid.NewString(),
+			ID:           util.GenerateUniqueID(),
 			Name:         "Ultimate",
 			Description:  "Ultimate plan",
 			PriceUSD:     30.00,

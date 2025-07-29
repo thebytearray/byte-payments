@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/segmentio/ksuid"
 	"github.com/skip2/go-qrcode"
 
 	"github.com/thebytearray/BytePayments/config"
@@ -87,4 +88,8 @@ func GenerateQRCodeBase64(content string) (string, error) {
 
 	base64Image := base64.StdEncoding.EncodeToString(png)
 	return "data:image/png;base64," + base64Image, nil
+}
+
+func GenerateUniqueID() string {
+	return ksuid.New().String()
 }
