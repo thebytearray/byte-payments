@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -14,7 +13,7 @@ import (
 )
 
 type PaymentService interface {
-	CreatePayment(ctx context.Context, body dto.CreatePaymentRequest) (dto.PaymentResponse, error)
+	CreatePayment(body dto.CreatePaymentRequest) (dto.PaymentResponse, error)
 	CancelPaymentById(id string) dto.ApiResponse
 	CheckPaymentStatusById(id string) dto.ApiResponse
 }
@@ -77,8 +76,15 @@ func (s *paymentService) CancelPaymentById(id string) dto.ApiResponse {
 	return dto.NewSuccess("Cancelled payment successfully.", nil)
 }
 
-func (s *paymentService) CreatePayment(ctx context.Context, body dto.CreatePaymentRequest) (dto.PaymentResponse, error) {
+func (s *paymentService) CreatePayment(body dto.CreatePaymentRequest) (dto.PaymentResponse, error) {
+	hasPendingPayment, err := s.repo.HasPendingPayment(body.Email)
+	if err != nil {
+		return dto.PaymentResponse{}, fmt.Errorf("failed to check pending payment : %w", err)
+	}
 
+	if hasPendingPayment {
+		return dto.PaymentResponse{}, fmt.Errorf("please complete or cancel the previous pending payment to create a new one.")
+	}
 	//get the selected plan
 	plan, err := s.repo.FindPlanById(body.PlanId)
 

@@ -40,7 +40,7 @@ func CreatePaymentHandler(ctx *fiber.Ctx) error {
 	//
 	paymentService := service.NewPaymentService(repository.NewPaymentRepository(database.DB))
 
-	resp, err := paymentService.CreatePayment(ctx.Context(), body)
+	resp, err := paymentService.CreatePayment(body)
 
 	if err != nil {
 		return ctx.Status(http.StatusExpectationFailed).JSON(dto.NewError("Payment creation failed", err))

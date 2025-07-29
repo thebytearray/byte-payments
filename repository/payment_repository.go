@@ -15,6 +15,7 @@ type PaymentRepository interface {
 	CreatePayment(payment model.Payment) error
 	FindPaymentById(id string) (model.Payment, error)
 	UpdatePayment(payment model.Payment) error
+	HasPendingPayment(user_email string) (bool, error)
 }
 
 type paymentRepository struct {
@@ -23,6 +24,17 @@ type paymentRepository struct {
 
 func NewPaymentRepository(db *gorm.DB) PaymentRepository {
 	return &paymentRepository{db}
+}
+
+func (r *paymentRepository) HasPendingPayment(user_email string) (bool, error) {
+	var count int64
+	err := r.db.Model(&model.Payment{}).Where("user_email = ? AND status = ?", user_email, model.Pending).Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, err
 }
 
 func (r *paymentRepository) UpdatePayment(payment model.Payment) error {
