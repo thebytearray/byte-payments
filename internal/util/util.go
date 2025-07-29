@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/skip2/go-qrcode"
+
 	"github.com/thebytearray/BytePayments/config"
 )
 
@@ -75,4 +77,14 @@ func AesDecryptPK(encrypted string) (string, error) {
 	}
 
 	return string(plaintext), nil
+}
+
+func GenerateQRCodeBase64(content string) (string, error) {
+	png, err := qrcode.Encode(content, qrcode.Medium, 256)
+	if err != nil {
+		return "", fmt.Errorf("failed to encode QR: %w", err)
+	}
+
+	base64Image := base64.StdEncoding.EncodeToString(png)
+	return "data:image/png;base64," + base64Image, nil
 }
