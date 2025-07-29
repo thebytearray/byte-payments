@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/segmentio/ksuid"
 	"github.com/skip2/go-qrcode"
@@ -76,6 +77,8 @@ func AesDecryptPK(encrypted string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("decryption failed: %w", err)
 	}
+
+	log.Println(string(plaintext))
 
 	return string(plaintext), nil
 }

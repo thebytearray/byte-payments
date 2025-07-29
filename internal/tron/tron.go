@@ -26,19 +26,19 @@ var (
 	ErrInsufficientBalance = errors.New("insufficient balance to cover transaction fee")
 )
 
-func CheckBalance(c *client.GrpcClient, addr string) (string, error) {
+func CheckBalance(c *client.GrpcClient, addr string) (float64, error) {
 	tronAddr, err := address.Base58ToAddress(addr)
 	if err != nil {
-		return "", fmt.Errorf("invalid TRON address: %w", err)
+		return float64(0), fmt.Errorf("invalid TRON address: %w", err)
 	}
 
 	account, err := c.GetAccount(tronAddr.String())
 	if err != nil {
-		return "", fmt.Errorf("failed to get account: %w", err)
+		return float64(0), fmt.Errorf("failed to get account: %w", err)
 	}
 
 	balanceTRX := float64(account.Balance) / 1e6
-	return fmt.Sprintf("%.6f TRX", balanceTRX), nil
+	return balanceTRX, nil
 }
 
 // GenerateWallet creates a new TRON wallet and returns private key hex and base58 address.
@@ -136,7 +136,6 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 	apiKey := config.Cfg.TRON_GRID_API_KEY
 	env := strings.ToLower(config.Cfg.APP_ENV)
 
-	// Select the correct TronGrid endpoint
 	var tronGridURL string
 	switch env {
 	case "production":
@@ -147,7 +146,6 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 		return 0, fmt.Errorf("unsupported APP_ENV: %s", config.Cfg.APP_ENV)
 	}
 
-	// Prepare request body
 	reqBody := dto.AccountResourceRequest{Address: walletAddress}
 	jsonData, err := json.Marshal(reqBody)
 	if err != nil {
@@ -179,13 +177,11 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 		return 0, fmt.Errorf("failed to decode response: %w", err)
 	}
 
-	// TRX balance in sun (1 TRX = 1_000_000 sun)
 	balanceSun := int64(balanceTRX * 1_000_000)
 
-	// --- Begin Fee Calculation ---
 	const (
-		trxTxSizeBytes      = int64(250)
-		sunPerBandwidthUnit = int64(40)
+		trxTxSizeBytes      = int64(300)
+		sunPerBandwidthUnit = int64(1000)
 	)
 
 	freeBandwidth := res.FreeNetLimit - res.FreeNetUsed
@@ -198,16 +194,35 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 		chargeableBandwidth = 0
 	}
 
-	feeSun := chargeableBandwidth * sunPerBandwidthUnit
+	// Calculate bandwidth fee
+	bandwidthFeeSun := chargeableBandwidth * sunPerBandwidthUnit
 
-	if balanceSun <= feeSun {
+	// Energy fee estimation (for simple TRX transfer, energy usage is minimal but add safety)
+	energyFeeSun := int64(10_000) // ~0.01 TRX for potential energy costs
+
+	// Total estimated fee
+	totalFeeSun := bandwidthFeeSun + energyFeeSun
+
+	// Increased safety buffer significantly to prevent insufficient balance errors
+	const safetyBuffer = int64(50_000)
+
+	totalCostSun := totalFeeSun + safetyBuffer
+
+	if balanceSun <= totalCostSun {
 		return 0, ErrInsufficientBalance
 	}
 
-	transferableSun := balanceSun - feeSun
+	transferableSun := balanceSun - totalCostSun
+
+	if transferableSun <= 0 {
+		return 0, ErrInsufficientBalance
+	}
+
+	// Convert back to TRX with proper precision handling
 	transferableTRX := float64(transferableSun) / 1_000_000
 
-	// Round down to 6 decimals
+	// Use ceiling instead of floor to ensure we don't try to send more than calculated
+	// Round down to 6 decimal places to match TRX precision
 	return math.Floor(transferableTRX*1e6) / 1e6, nil
 }
 

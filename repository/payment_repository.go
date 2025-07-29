@@ -2,6 +2,7 @@ package repository
 
 import (
 	"log"
+	"time"
 
 	"github.com/thebytearray/BytePayments/model"
 	"gorm.io/gorm"
@@ -16,6 +17,9 @@ type PaymentRepository interface {
 	FindPaymentById(id string) (model.Payment, error)
 	UpdatePayment(payment model.Payment) error
 	HasPendingPayment(user_email string) (bool, error)
+	FindAllPendingPayments() ([]model.Payment, error)
+	MarkAsCompletedById(id string, paidAmount float64, completedAt *time.Time) error
+	MarkAsExpiredById(id string) error
 }
 
 type paymentRepository struct {
@@ -24,6 +28,26 @@ type paymentRepository struct {
 
 func NewPaymentRepository(db *gorm.DB) PaymentRepository {
 	return &paymentRepository{db}
+}
+
+func (r *paymentRepository) FindAllPendingPayments() ([]model.Payment, error) {
+	var payments []model.Payment
+	err := r.db.Where("status = ? AND created_at >= ?", model.Pending, time.Now().Add(-15*time.Minute)).Preload("Wallet").Find(&payments).Error
+	return payments, err
+}
+
+func (r *paymentRepository) MarkAsCompletedById(id string, paidAmount float64, completedAt *time.Time) error {
+	return r.db.Model(&model.Payment{}).
+		Where("id = ?", id).
+		Updates(map[string]any{
+			"status":          model.Completed,
+			"paid_amount_trx": paidAmount,
+			"updated_at":      completedAt,
+		}).Error
+}
+
+func (r *paymentRepository) MarkAsExpiredById(id string) error {
+	return r.db.Model(&model.Payment{}).Where("id = ?", id).Update("status", model.Expired).Error
 }
 
 func (r *paymentRepository) HasPendingPayment(user_email string) (bool, error) {

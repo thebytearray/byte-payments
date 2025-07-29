@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/thebytearray/BytePayments/config"
 	_ "github.com/thebytearray/BytePayments/docs"
+	"github.com/thebytearray/BytePayments/internal/cron"
 	"github.com/thebytearray/BytePayments/internal/database"
 	"github.com/thebytearray/BytePayments/internal/tron"
 	"github.com/thebytearray/BytePayments/route"
@@ -14,9 +15,9 @@ func main() {
 	tron.NewClient()
 	//database.SeedDatabase()
 	//	log.Println(tron.ConvertUSDToTRX(10.00))
+	go cron.NewPaymentCron()
 	app := route.NewRouter()
 	app.Listen(":8080")
-	//
 	//
 
 }

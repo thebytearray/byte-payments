@@ -16,4 +16,6 @@ type PaymentResponse struct {
 	QrImage          string              `json:"qr_image"`
 	TrxAmount        float64             `json:"trx_amount"`
 	TrxWalletAddress string              `json:"trx_wallet_address"`
+	CreatedAt        string              `json:"created_at"`
+	UpdatedAt        string              `json:"updated_at"`
 }

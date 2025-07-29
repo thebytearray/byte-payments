@@ -3,7 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
+	"log"
+	"math"
+	"time"
 
+	"github.com/thebytearray/BytePayments/config"
 	"github.com/thebytearray/BytePayments/dto"
 	"github.com/thebytearray/BytePayments/internal/tron"
 	"github.com/thebytearray/BytePayments/internal/util"
@@ -16,6 +20,7 @@ type PaymentService interface {
 	CreatePayment(body dto.CreatePaymentRequest) (dto.PaymentResponse, error)
 	CancelPaymentById(id string) dto.ApiResponse
 	CheckPaymentStatusById(id string) dto.ApiResponse
+	ProcessPendingPayments()
 }
 
 type paymentService struct {
@@ -24,6 +29,93 @@ type paymentService struct {
 
 func NewPaymentService(repo repository.PaymentRepository) PaymentService {
 	return &paymentService{repo}
+}
+
+func (s *paymentService) ProcessPendingPayments() {
+	const completionThreshold = 0.95 // 95%
+	const tolerance = 0.001
+	payments, err := s.repo.FindAllPendingPayments()
+	if err != nil {
+		log.Println("Error fetching pending payments : ", err)
+		return
+	}
+
+	for _, p := range payments {
+		//check for expiry
+		if time.Since(p.CreatedAt) > 15*time.Minute {
+			err := s.repo.MarkAsExpiredById(p.ID)
+			if err != nil {
+				log.Println("failed to mark payment as expired", err)
+			}
+			continue
+		}
+
+		//check actual balance?
+		balance, err := tron.CheckBalance(tron.TRON_CLIENT, p.Wallet.WalletAddress)
+
+		if err != nil {
+			log.Println("Error fetching balance : ", err)
+			continue
+		}
+
+		//parse
+		diff := balance - p.AmountTRX
+		absDiff := math.Abs(diff)
+		receivedRatio := balance / p.AmountTRX
+
+		if receivedRatio >= completionThreshold || absDiff <= tolerance {
+			now := time.Now()
+			err := s.repo.MarkAsCompletedById(p.ID, balance, &now)
+			if err != nil {
+				log.Printf("Failed to mark completed for payment %s: %v", p.ID, err)
+				continue
+			}
+
+			log.Printf("Payment %s completed with received %.6f TRX (expected %.6f)", p.ID, balance, p.AmountTRX)
+			err = s.sweepFunds(p)
+			if err != nil {
+				log.Printf("Failed to sweep funds for payment %s: %v", p.ID, err)
+			} else {
+				log.Printf("Funds swept for payment %s", p.ID)
+			}
+		} else {
+			log.Printf("Payment %s still pending: received %.6f TRX (%.2f%% of expected)", p.ID, balance, receivedRatio*100)
+		}
+
+	}
+
+}
+
+func (s *paymentService) sweepFunds(payment model.Payment) error {
+	// 1. Check wallet balance
+	balance, err := tron.CheckBalance(tron.TRON_CLIENT, payment.Wallet.WalletAddress)
+	if err != nil {
+		return fmt.Errorf("failed to check balance: %w", err)
+	}
+
+	transferable, err := tron.GetTransferableAmount(payment.Wallet.WalletAddress, balance)
+	if err != nil {
+		return fmt.Errorf("failed to calculate transferable amount: %w", err)
+	}
+
+	if transferable <= 0 {
+		return fmt.Errorf("no transferable amount available")
+	}
+
+	mainWalletAddr := config.Cfg.TRX_HOT_WALLET_ADDRESS
+	paymentWalletPrivKey, err := util.AesDecryptPK(payment.Wallet.WalletSecret)
+
+	if err != nil {
+		return fmt.Errorf("failed to decrypt wallet key: %w", err)
+	}
+
+	txID, err := tron.SendTRX(tron.TRON_CLIENT, payment.Wallet.WalletAddress, mainWalletAddr, transferable, paymentWalletPrivKey)
+	if err != nil {
+		return fmt.Errorf("failed to send trx: %w", err)
+	}
+
+	log.Printf("Swept %.6f TRX from %s to main wallet. TxID: %s", transferable, payment.Wallet.WalletAddress, txID)
+	return nil
 }
 
 func (s *paymentService) CheckPaymentStatusById(id string) dto.ApiResponse {
@@ -47,6 +139,8 @@ func (s *paymentService) CheckPaymentStatusById(id string) dto.ApiResponse {
 		QrImage:          base64Image,
 		TrxAmount:        payment.AmountTRX,
 		TrxWalletAddress: payment.Wallet.WalletAddress,
+		CreatedAt:        payment.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:        payment.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	})
 }
 
@@ -181,6 +275,8 @@ func (s *paymentService) CreatePayment(body dto.CreatePaymentRequest) (dto.Payme
 		QrImage:          base64Image,
 		TrxAmount:        amountTrx,
 		TrxWalletAddress: wallet.WalletAddress,
+		CreatedAt:        payment.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:        payment.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}, nil
 
 }

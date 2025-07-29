@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Select Plan - Byte Payments</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            neutral: {
+                                50: '#fafafa',
+                                100: '#f5f5f5',
+                                200: '#e5e5e5',
+                                300: '#d4d4d4',
+                                400: '#a3a3a3',
+                                500: '#737373',
+                                600: '#525252',
+                                700: '#404040',
+                                800: '#262626',
+                                900: '#171717',
+                                950: '#0a0a0a',
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            body {
+                font-family: system-ui, -apple-system, sans-serif;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+            .plan-card {
+                transition: all 0.2s ease;
+                cursor: pointer;
+                border: 2px solid #e5e5e5;
+            }
+            .dark .plan-card {
+                border-color: #404040;
+            }
+            .plan-card:hover {
+                border-color: #3b82f6;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            }
+            .plan-card.selected {
+                border-color: #3b82f6;
+                background: #eff6ff;
+            }
+            .dark .plan-card.selected {
+                background: #1e3a8a;
+            }
+            .btn-primary {
+                background: #3b82f6;
+                transition: all 0.2s ease;
+            }
+            .btn-primary:hover:not(:disabled) {
+                background: #2563eb;
+            }
+            .btn-primary:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .theme-toggle {
+                transition: all 0.2s ease;
+            }
+        </style>
+    </head>
+    <body class="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 p-4 transition-colors">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header with Theme Toggle -->
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-center flex-1">
+                    <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">Byte Payments</h1>
+                    <p class="text-neutral-600 dark:text-neutral-400">by The Byte Array</p>
+                </div>
+                <button
+                    id="themeToggle"
+                    class="theme-toggle p-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300"
+                    aria-label="Toggle theme"
+                >
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
+
+            <!-- Email Input -->
+            <div class="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800 p-6 mb-6 max-w-md mx-auto">
+                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Email Address</label>
+                <input
+                    type="email"
+                    id="userEmail"
+                    placeholder="your@email.com"
+                    class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400"
+                />
+                <div id="emailError" class="mt-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded hidden">
+                    Please enter a valid email address
+                </div>
+            </div>
+
+            <!-- Plans Section -->
+            <div class="mb-8">
+                <div id="plansContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+                    <!-- Loading -->
+                    <div class="col-span-full flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue Button -->
+            <div class="text-center">
+                <button
+                    id="continueBtn"
+                    disabled
+                    class="btn-primary px-6 py-3 rounded-md font-medium text-white min-w-48"
+                >
+                    <span id="continueText">Select a Plan</span>
+                    <span id="continueSpinner" class="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-white hidden"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div
+            id="toast"
+            class="fixed bottom-4 right-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"
+        >
+            <div class="flex items-center gap-2">
+                <span id="toastIcon" class="text-blue-600 dark:text-blue-400">ℹ</span>
+                <span id="toastMessage">Message</span>
+            </div>
+        </div>
+
+        <script>
+            let selectedPlan = null;
+            let plans = [];
+            let currencies = [];
+            let isDarkMode = false;
+
+            // Theme management
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+
+            function initTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                    isDarkMode = true;
+                    themeIcon.textContent = '☀️';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    isDarkMode = false;
+                    themeIcon.textContent = '🌙';
+                }
+            }
+
+            function toggleTheme() {
+                isDarkMode = !isDarkMode;
+                if (isDarkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.textContent = '☀️';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.textContent = '🌙';
+                }
+            }
+
+            // DOM Elements
+            const userEmailInput = document.getElementById('userEmail');
+            const emailError = document.getElementById('emailError');
+            const plansContainer = document.getElementById('plansContainer');
+            const continueBtn = document.getElementById('continueBtn');
+            const continueText = document.getElementById('continueText');
+            const continueSpinner = document.getElementById('continueSpinner');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                initTheme();
+                await loadData();
+                setupEventListeners();
+            });
+
+            async function loadData() {
+                try {
+                    const [plansResponse, currenciesResponse] = await Promise.all([
+                        fetch('/api/v1/plans'),
+                        fetch('/api/v1/currencies')
+                    ]);
+
+                    const plansData = await plansResponse.json();
+                    const currenciesData = await currenciesResponse.json();
+
+                    if (plansData.status === 'ok') {
+                        plans = plansData.data;
+                        renderPlans();
+                    } else {
+                        showToast('Failed to load plans', 'error');
+                    }
+
+                    if (currenciesData.status === 'ok') {
+                        currencies = currenciesData.data;
+                    }
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    showToast('Failed to load data', 'error');
+                    plansContainer.innerHTML = '<div class="col-span-full text-center text-neutral-500 dark:text-neutral-400 py-8">Failed to load plans. Please refresh the page.</div>';
+                }
+            }
+
+            function renderPlans() {
+                plansContainer.innerHTML = plans.map(plan => `
+                    <div class="plan-card bg-white dark:bg-neutral-900 rounded-lg p-4 border-2" data-plan-id="${plan.id}">
+                        <div class="text-center">
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">${plan.name}</h3>
+                            <div class="mb-3">
+                                <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">$${plan.price_usd}</span>
+                                <span class="text-neutral-500 dark:text-neutral-400 text-sm">USD</span>
+                            </div>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-3">${plan.description}</p>
+                            <div class="flex items-center justify-center gap-1 text-sm text-neutral-500 dark:text-neutral-400">
+                                <span>Duration</span>
+                                <span>${plan.duration_days} days</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-center">
+                            <div class="w-5 h-5 border-2 border-neutral-300 dark:border-neutral-600 rounded-full plan-selector flex items-center justify-center"></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function setupEventListeners() {
+                userEmailInput.addEventListener('input', validateEmail);
+                userEmailInput.addEventListener('blur', validateEmail);
+                themeToggle.addEventListener('click', toggleTheme);
+
+                plansContainer.addEventListener('click', (e) => {
+                    const planCard = e.target.closest('.plan-card');
+                    if (planCard) {
+                        selectPlan(planCard.dataset.planId);
+                    }
+                });
+
+                continueBtn.addEventListener('click', createPayment);
+            }
+
+            function validateEmail() {
+                const email = userEmailInput.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (email && !emailRegex.test(email)) {
+                    emailError.classList.remove('hidden');
+                    return false;
+                } else {
+                    emailError.classList.add('hidden');
+                    return true;
+                }
+            }
+
+            function selectPlan(planId) {
+                document.querySelectorAll('.plan-card').forEach(card => {
+                    card.classList.remove('selected');
+                    const selector = card.querySelector('.plan-selector');
+                    selector.style.background = 'transparent';
+                    selector.style.borderColor = isDarkMode ? '#525252' : '#d1d5db';
+                    selector.innerHTML = '';
+                });
+
+                const selectedCard = document.querySelector(`[data-plan-id="${planId}"]`);
+                selectedCard.classList.add('selected');
+                const selector = selectedCard.querySelector('.plan-selector');
+                selector.style.background = '#3b82f6';
+                selector.style.borderColor = '#3b82f6';
+                selector.innerHTML = '<span class="text-white text-xs">✓</span>';
+
+                selectedPlan = plans.find(p => p.id === planId);
+                updateContinueButton();
+            }
+
+            function updateContinueButton() {
+                const email = userEmailInput.value.trim();
+                const emailValid = email && validateEmail();
+
+                if (emailValid && selectedPlan) {
+                    continueBtn.disabled = false;
+                    continueText.textContent = `Continue with ${selectedPlan.name}`;
+                } else if (selectedPlan && !emailValid) {
+                    continueBtn.disabled = true;
+                    continueText.textContent = 'Enter valid email';
+                } else if (emailValid && !selectedPlan) {
+                    continueBtn.disabled = true;
+                    continueText.textContent = 'Select a plan';
+                } else {
+                    continueBtn.disabled = true;
+                    continueText.textContent = 'Select a plan';
+                }
+            }
+
+            async function createPayment() {
+                if (!selectedPlan || !validateEmail()) return;
+                
+                const email = userEmailInput.value.trim();
+                const trxCurrency = currencies.find(c => c.code === 'TRX');
+                
+                if (!trxCurrency) {
+                    showToast('TRX currency not available', 'error');
+                    return;
+                }
+
+                continueBtn.disabled = true;
+                continueText.textContent = 'Creating Payment...';
+                continueSpinner.classList.remove('hidden');
+
+                try {
+                    const response = await fetch('/api/v1/payments/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            plan_id: selectedPlan.id,
+                            currency_code: trxCurrency.code
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'ok' && data.data) {
+                        window.location.href = `/pay?id=${data.data.payment_id}`;
+                    } else {
+                        showToast(data.message || 'Failed to create payment', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error creating payment:', error);
+                    showToast('Failed to create payment', 'error');
+                } finally {
+                    continueBtn.disabled = false;
+                    continueSpinner.classList.add('hidden');
+                    updateContinueButton();
+                }
+            }
+
+            userEmailInput.addEventListener('input', updateContinueButton);
+
+            function showToast(message, type = 'info') {
+                const icons = {
+                    success: '✓',
+                    error: '✗',
+                    info: 'ℹ'
+                };
+
+                toastIcon.textContent = icons[type] || icons.info;
+                toastMessage.textContent = message;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 4000);
+            }
+        </script>
+    </body>
+</html>

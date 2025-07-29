@@ -8,6 +8,7 @@ const (
 	Pending   PaymentStatus = "pending"
 	Completed PaymentStatus = "completed"
 	Cancelled PaymentStatus = "cancelled"
+	Expired   PaymentStatus = "expired"
 )
 
 type Payment struct {

@@ -8,6 +8,29 @@ import (
 
 func NewRouter() *fiber.App {
 	app := fiber.New()
+
+	// Frontend routes
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Redirect("/plans")
+	})
+
+	app.Get("/plans", func(c *fiber.Ctx) error {
+		return c.SendFile("./static/select-plan.html")
+	})
+
+	app.Get("/select-plan", func(c *fiber.Ctx) error {
+		return c.Redirect("/plans")
+	})
+
+	app.Get("/pay", func(c *fiber.Ctx) error {
+		return c.SendFile("./static/pay.html")
+	})
+
+	app.Get("/payment.html", func(c *fiber.Ctx) error {
+		return c.Redirect("/pay")
+	})
+
+	// API routes
 	app.Get("/swagger/*", swagger.HandlerDefault)
 	v1 := app.Group("/api/v1")
 	//payments
