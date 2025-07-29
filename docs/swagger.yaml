@@ -1,159 +1,24 @@
-definitions:
-  dto.ApiResponse:
-    properties:
-      data: {}
-      error:
-        type: string
-      message:
-        type: string
-      status:
-        type: string
-      status_code:
-        type: integer
-    type: object
-  dto.CreatePaymentRequest:
-    properties:
-      currency_code:
-        type: string
-      email:
-        type: string
-      plan_id:
-        type: string
-    required:
-    - currency_code
-    type: object
-  dto.PaymentResponse:
-    properties:
-      email:
-        type: string
-      payment_id:
-        type: string
-      plan_id:
-        type: string
-      qr_image:
-        type: string
-      status:
-        $ref: '#/definitions/model.PaymentStatus'
-      trx_amount:
-        type: number
-      trx_wallet_address:
-        type: string
-    type: object
-  model.PaymentStatus:
-    enum:
-    - pending
-    - completed
-    - cancelled
-    type: string
-    x-enum-varnames:
-    - Pending
-    - Completed
-    - Cancelled
+basePath: /
+host: localhost:8080
 info:
-  contact: {}
-paths:
-  /api/v1/currencies:
-    get:
-      description: Returns a list of all available currencies
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.ApiResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ApiResponse'
-      summary: Get all available currencies
-      tags:
-      - currencies
-  /api/v1/payments/{id}/cancel:
-    patch:
-      description: Cancels a payment that has been created before
-      parameters:
-      - description: Payment ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-      summary: Cancel a created payment
-      tags:
-      - cancel
-  /api/v1/payments/{id}/status:
-    get:
-      description: Gives the status of a payment
-      parameters:
-      - description: Payment ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-      summary: Get Status of a payment
-      tags:
-      - status
-  /api/v1/payments/create:
-    post:
-      description: Creates a payment in the database and returns payment details
-      parameters:
-      - description: Payment Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreatePaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.PaymentResponse'
-      summary: Create a payment
-      tags:
-      - create
-  /api/v1/plans:
-    get:
-      description: Returns a list of all subscription plans
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.ApiResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ApiResponse'
-      summary: Get all plans
-      tags:
-      - plans
+  contact:
+    email: support@bytepayments.com
+    name: API Support
+  description: A payment processing API for BytePayments platform
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: BytePayments API
+  version: "1.0"
+paths: {}
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Payment Completed (Overpaid) - BytePayments</title>
+        <style>
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Roboto,
+                    Oxygen,
+                    Ubuntu,
+                    Cantarell,
+                    sans-serif;
+                line-height: 1.6;
+                color: #e5e7eb;
+                margin: 0;
+                padding: 0;
+                background-color: #0f172a;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #1e293b;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+                border: 1px solid #334155;
+            }
+            .header {
+                background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
+                color: white;
+                padding: 40px 30px;
+                text-align: center;
+                border-bottom: 1px solid #334155;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 32px;
+                font-weight: 700;
+                letter-spacing: -0.025em;
+            }
+            .header p {
+                margin: 8px 0 0 0;
+                opacity: 0.9;
+                font-size: 16px;
+                font-weight: 500;
+            }
+            .content {
+                padding: 40px 30px;
+            }
+            .success-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 30px;
+                background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+            }
+            .success-icon svg {
+                width: 40px;
+                height: 40px;
+                color: white;
+            }
+            .title {
+                text-align: center;
+                color: #f8fafc;
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0 0 16px 0;
+                letter-spacing: -0.025em;
+            }
+            .subtitle {
+                text-align: center;
+                color: #94a3b8;
+                font-size: 16px;
+                margin: 0 0 40px 0;
+                line-height: 1.5;
+            }
+            .completion-notice {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 1px solid #047857;
+            }
+            .completion-title {
+                color: #34d399;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .completion-text {
+                color: #a7f3d0;
+                margin: 0;
+                font-size: 16px;
+                font-weight: 500;
+            }
+            .payment-details {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                border: 1px solid #334155;
+            }
+            .detail-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid #334155;
+            }
+            .detail-row:last-child {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+            .detail-label {
+                color: #94a3b8;
+                font-weight: 600;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .detail-value {
+                color: #e2e8f0;
+                font-weight: 600;
+                font-size: 15px;
+                text-align: right;
+            }
+            .overpaid-notice {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 2px solid #d97706;
+            }
+            .overpaid-title {
+                color: #f59e0b;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .overpaid-amount {
+                color: #fcd34d;
+                font-size: 32px;
+                font-weight: 800;
+                margin: 0 0 12px 0;
+            }
+            .overpaid-text {
+                color: #f59e0b;
+                margin: 0;
+                font-size: 16px;
+                font-weight: 500;
+            }
+            .refund-section {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                border: 1px solid #d97706;
+            }
+            .refund-title {
+                color: #f59e0b;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+            }
+            .refund-text {
+                color: #f59e0b;
+                margin: 0 0 20px 0;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .refund-instructions {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 8px;
+                padding: 20px;
+                border: 1px solid #d97706;
+            }
+            .refund-instructions ul {
+                margin: 0;
+                padding-left: 20px;
+                color: #f59e0b;
+            }
+            .refund-instructions li {
+                margin-bottom: 12px;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .support-section {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 1px solid #2563eb;
+            }
+            .support-title {
+                color: #60a5fa;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .support-text {
+                color: #93c5fd;
+                margin: 0 0 20px 0;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .support-email {
+                color: #60a5fa;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                padding: 12px 24px;
+                background-color: #1e293b;
+                border-radius: 8px;
+                display: inline-block;
+                border: 2px solid #2563eb;
+                transition: all 0.2s ease;
+            }
+            .support-email:hover {
+                background-color: #2563eb;
+                color: white;
+            }
+            .footer {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 30px;
+                text-align: center;
+                color: #94a3b8;
+                font-size: 14px;
+                border-top: 1px solid #334155;
+            }
+            .footer a {
+                color: #60a5fa;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            .footer a:hover {
+                text-decoration: underline;
+            }
+            .divider {
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    #334155 50%,
+                    transparent 100%
+                );
+                margin: 30px 0;
+            }
+            @media (max-width: 640px) {
+                .container {
+                    margin: 0;
+                    border-radius: 0;
+                }
+                .content,
+                .header {
+                    padding: 30px 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>BytePayments</h1>
+                <p>by The Byte Array</p>
+            </div>
+
+            <div class="content">
+                <div class="success-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M5 13l4 4L19 7"
+                        ></path>
+                    </svg>
+                </div>
+
+                <h2 class="title">Payment Successfully Completed</h2>
+                <p class="subtitle">
+                    Your payment has been processed and your order is now
+                    active. Thank you for choosing BytePayments.
+                </p>
+
+                <div class="completion-notice">
+                    <h3 class="completion-title">✅ Order Status: Completed</h3>
+                    <p class="completion-text">
+                        Your order has been activated and is ready to use!
+                    </p>
+                </div>
+
+                <div class="payment-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Payment ID</span>
+                        <span class="detail-value">{{PAYMENT_ID}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Plan</span>
+                        <span class="detail-value">{{PLAN_NAME}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Required Amount</span>
+                        <span class="detail-value"
+                            >{{REQUIRED_AMOUNT}} TRX</span
+                        >
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Amount Paid</span>
+                        <span class="detail-value">{{AMOUNT_PAID}} TRX</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{USER_EMAIL}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Completion Date</span>
+                        <span class="detail-value">{{COMPLETION_DATE}}</span>
+                    </div>
+                </div>
+
+                <div class="overpaid-notice">
+                    <h3 class="overpaid-title">💰 Overpayment Detected</h3>
+                    <div class="overpaid-amount">{{OVERPAID_AMOUNT}} TRX</div>
+                    <p class="overpaid-text">
+                        You have paid more than the required amount
+                    </p>
+                </div>
+
+                <div class="refund-section">
+                    <h3 class="refund-title">Refund Information</h3>
+                    <p class="refund-text">
+                        We noticed you paid more than required. Here's what you
+                        need to know:
+                    </p>
+
+                    <div class="refund-instructions">
+                        <ul>
+                            <li>
+                                <strong>Your order is complete</strong> - No
+                                additional action needed for your service
+                            </li>
+                            <li>
+                                <strong>Overpaid amount:</strong>
+                                {{OVERPAID_AMOUNT}} TRX
+                            </li>
+                            <li>
+                                <strong>To request a refund:</strong> Contact
+                                our support team
+                            </li>
+                            <li>
+                                <strong>Response time:</strong> Refund requests
+                                are processed within 24-48 hours
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="support-section">
+                    <h3 class="support-title">Need a Refund or Support?</h3>
+                    <p class="support-text">
+                        For refund requests or any questions, please contact us
+                        with your Payment ID.
+                    </p>
+                    <a
+                        href="mailto:contact@thebytearray.org"
+                        class="support-email"
+                        >Contact Support</a
+                    >
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>&copy; 2025 The Byte Array. All rights reserved.</p>
+                <p>
+                    This is an automated email. Please do not reply directly to
+                    this message.
+                </p>
+                <p>
+                    For support, contact
+                    <a href="mailto:contact@thebytearray.org"
+                        >contact@thebytearray.org</a
+                    >
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -10,11 +10,12 @@ import (
 
 // GetCurrenciesHandler godoc
 // @Summary      Get all available currencies
-// @Description  Returns a list of all available currencies
+// @Description  Returns a list of all supported currencies with their exchange rates and symbols
 // @Tags         currencies
+// @Accept       json
 // @Produce      json
-// @Success      200  {object}  dto.ApiResponse
-// @Failure      404  {object}  dto.ApiResponse
+// @Success      200  {object}  dto.ApiResponse "Currencies retrieved successfully"
+// @Failure      404  {object}  dto.ApiResponse "No currencies found"
 // @Router       /api/v1/currencies [get]
 func GetCurrenciesHandler(ctx *fiber.Ctx) error {
 	currencyService := service.NewCurrenciesService(repository.NewCurrenciesRepository(database.DB))

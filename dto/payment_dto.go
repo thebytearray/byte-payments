@@ -3,9 +3,10 @@ package dto
 import "github.com/thebytearray/BytePayments/model"
 
 type CreatePaymentRequest struct {
-	PlanId       string `json:"plan_id"`
-	Email        string `json:"email"`
-	CurrencyCode string `json:"currency_code" validate:"required"`
+	PlanId            string `json:"plan_id"`
+	Email             string `json:"email"`
+	CurrencyCode      string `json:"currency_code" validate:"required"`
+	VerificationToken string `json:"verification_token" validate:"required"`
 }
 
 type PaymentResponse struct {

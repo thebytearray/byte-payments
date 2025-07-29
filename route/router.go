@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
+	"github.com/thebytearray/BytePayments/config"
 	"github.com/thebytearray/BytePayments/controller"
 )
 
@@ -30,9 +31,20 @@ func NewRouter() *fiber.App {
 		return c.Redirect("/pay")
 	})
 
-	// API routes
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	// API routes - Swagger UI only in development mode
+	if config.Cfg.APP_ENV == "development" {
+		app.Get("/swagger/*", swagger.HandlerDefault)
+	}
+	
 	v1 := app.Group("/api/v1")
+	
+	//verification
+	v1_verification := v1.Group("/verification")
+	{
+		v1_verification.Post("/send-code", controller.SendVerificationCodeHandler)
+		v1_verification.Post("/verify-code", controller.VerifyEmailCodeHandler)
+	}
+	
 	//payments
 	//
 	v1_payments := v1.Group("/payments")

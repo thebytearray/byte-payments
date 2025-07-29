@@ -12,13 +12,15 @@ import (
 )
 
 // CreatePaymentHandler godoc
-// @Summary      Create a payment
-// @Description  Creates a payment in the database and returns payment details
-// @Tags         create
+// @Summary      Create a new payment
+// @Description  Creates a new payment with the specified plan and currency, generates a TRX wallet address and QR code for payment
+// @Tags         payments
+// @Accept       json
 // @Produce      json
-// @Param        request body dto.CreatePaymentRequest true "Payment Request"
-// @Success      200  {object}  dto.PaymentResponse
-// @Failure      404  {object}  dto.PaymentResponse
+// @Param        request body dto.CreatePaymentRequest true "Payment creation request"
+// @Success      200  {object}  dto.ApiResponse{data=dto.PaymentResponse} "Payment created successfully"
+// @Failure      400  {object}  dto.ApiResponse "Invalid request body or validation error"
+// @Failure      422  {object}  dto.ApiResponse "Payment creation failed"
 // @Router       /api/v1/payments/create [post]
 func CreatePaymentHandler(ctx *fiber.Ctx) error {
 	var body dto.CreatePaymentRequest
@@ -50,13 +52,14 @@ func CreatePaymentHandler(ctx *fiber.Ctx) error {
 }
 
 // CancelPaymentHandler godoc
-// @Summary      Cancel a created payment
-// @Description  Cancels a payment that has been created before
-// @Tags         cancel
-// @Param        id path string true "Payment ID"
+// @Summary      Cancel a payment
+// @Description  Cancels an existing payment by its ID
+// @Tags         payments
+// @Accept       json
 // @Produce      json
-// @Success      200  {object}  dto.PaymentResponse
-// @Failure      404  {object}  dto.PaymentResponse
+// @Param        id path string true "Payment ID" example("payment_123456")
+// @Success      200  {object}  dto.ApiResponse "Payment cancelled successfully"
+// @Failure      404  {object}  dto.ApiResponse "Payment not found"
 // @Router       /api/v1/payments/{id}/cancel [patch]
 func CancelPaymentHandler(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
@@ -66,14 +69,15 @@ func CancelPaymentHandler(ctx *fiber.Ctx) error {
 	return ctx.JSON(resp)
 }
 
-// CancelPaymentHandler godoc
-// @Summary      Get Status of a payment
-// @Description  Gives the status of a payment
-// @Tags         status
-// @Param        id path string true "Payment ID"
+// GetPaymentStatusHandler godoc
+// @Summary      Get payment status
+// @Description  Retrieves the current status of a payment by its ID
+// @Tags         payments
+// @Accept       json
 // @Produce      json
-// @Success      200  {object}  dto.PaymentResponse
-// @Failure      404  {object}  dto.PaymentResponse
+// @Param        id path string true "Payment ID" example("payment_123456")
+// @Success      200  {object}  dto.ApiResponse{data=dto.PaymentResponse} "Payment status retrieved successfully"
+// @Failure      404  {object}  dto.ApiResponse "Payment not found"
 // @Router       /api/v1/payments/{id}/status [get]
 func GetPaymentStatusHandler(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")

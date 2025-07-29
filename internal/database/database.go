@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/thebytearray/BytePayments/config"
 	"github.com/thebytearray/BytePayments/internal/util"
 	"github.com/thebytearray/BytePayments/model"
@@ -12,34 +13,45 @@ import (
 )
 
 var DB *gorm.DB
+var Cache *ristretto.Cache
 
-func NewConnection() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+func Connect() {
+	var err error
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		config.Cfg.DATABASE_USER,
 		config.Cfg.DATABASE_PASS,
 		config.Cfg.DATABASE_HOST,
 		config.Cfg.DATABASE_PORT,
-		config.Cfg.DATABASE_NAME)
+		config.Cfg.DATABASE_NAME,
+	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		log.Printf("Failed to connect to database, %v", err)
+		log.Fatalln("Could not connect to the database:", err)
 	}
+
+	log.Println("Connected to database successfully 📦")
+
+	// Initialize Ristretto cache
+	Cache, err = ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
+		BufferItems: 64,      // number of keys per Get buffer.
+	})
+	if err != nil {
+		log.Fatalln("Could not initialize Ristretto cache:", err)
+	}
+	log.Println("Initialized Ristretto cache successfully ⚡")
 
 	//migrate
 	//
 	//
 	//
-	err = db.AutoMigrate(&model.Currency{}, &model.Payment{}, &model.Plan{})
+	err = DB.AutoMigrate(&model.Currency{}, &model.Payment{}, &model.Plan{}, &model.Wallet{})
 	if err != nil {
 		log.Printf("Failed to automigrate database, %v", err)
 	}
-
-	DB = db
-
-	log.Println("Connected to database successfully.")
-
 }
 
 func SeedDatabase() {

@@ -1,243 +1,32 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "A payment processing API for BytePayments platform",
+        "title": "BytePayments API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "support@bytepayments.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
     },
-    "paths": {
-        "/api/v1/currencies": {
-            "get": {
-                "description": "Returns a list of all available currencies",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "currencies"
-                ],
-                "summary": "Get all available currencies",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/payments/create": {
-            "post": {
-                "description": "Creates a payment in the database and returns payment details",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "create"
-                ],
-                "summary": "Create a payment",
-                "parameters": [
-                    {
-                        "description": "Payment Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreatePaymentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/payments/{id}/cancel": {
-            "patch": {
-                "description": "Cancels a payment that has been created before",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cancel"
-                ],
-                "summary": "Cancel a created payment",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Payment ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/payments/{id}/status": {
-            "get": {
-                "description": "Gives the status of a payment",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "status"
-                ],
-                "summary": "Get Status of a payment",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Payment ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.PaymentResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/plans": {
-            "get": {
-                "description": "Returns a list of all subscription plans",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "plans"
-                ],
-                "summary": "Get all plans",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "dto.ApiResponse": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "error": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "status_code": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.CreatePaymentRequest": {
-            "type": "object",
-            "required": [
-                "currency_code"
-            ],
-            "properties": {
-                "currency_code": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "plan_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.PaymentResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "payment_id": {
-                    "type": "string"
-                },
-                "plan_id": {
-                    "type": "string"
-                },
-                "qr_image": {
-                    "type": "string"
-                },
-                "status": {
-                    "$ref": "#/definitions/model.PaymentStatus"
-                },
-                "trx_amount": {
-                    "type": "number"
-                },
-                "trx_wallet_address": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.PaymentStatus": {
-            "type": "string",
-            "enum": [
-                "pending",
-                "completed",
-                "cancelled"
-            ],
-            "x-enum-varnames": [
-                "Pending",
-                "Completed",
-                "Cancelled"
-            ]
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {},
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

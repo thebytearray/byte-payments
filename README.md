@@ -22,6 +22,37 @@
 5. Swagger (for api docs).
 6. Air (for live reload)
 
+## API Documentation
+
+The API documentation is available via Swagger UI and is automatically generated from the code comments. 
+
+### Accessing Swagger UI
+
+- **Development Mode**: Swagger UI is available at `http://localhost:8080/swagger/` when `APP_ENV=development`
+- **Production Mode**: Swagger UI is disabled for security reasons when `APP_ENV=production`
+
+### Environment Configuration
+
+To enable Swagger UI, set the following in your `.env` file:
+
+```env
+APP_ENV=development
+```
+
+For production, set:
+
+```env
+APP_ENV=production
+```
+
+### Regenerating Documentation
+
+If you modify the API endpoints or add new ones, regenerate the Swagger documentation:
+
+```bash
+swag init -g cmd/main.go
+```
+
 #### Contributing Guide : Yeah it's open for contribution but for existing bug or security issue fix. We do not expect any major breaking change right now.For example a new currency, but if you want to do that first discuss in the issue thread.
 
 

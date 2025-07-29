@@ -32,7 +32,10 @@ func NewPaymentRepository(db *gorm.DB) PaymentRepository {
 
 func (r *paymentRepository) FindAllPendingPayments() ([]model.Payment, error) {
 	var payments []model.Payment
-	err := r.db.Where("status = ? AND created_at >= ?", model.Pending, time.Now().Add(-15*time.Minute)).Preload("Wallet").Find(&payments).Error
+	err := r.db.Where("status = ? AND created_at >= ?", model.Pending, time.Now().Add(-15*time.Minute)).
+		Preload("Wallet").
+		Preload("Plan").
+		Find(&payments).Error
 	return payments, err
 }
 

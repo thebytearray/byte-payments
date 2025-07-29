@@ -7,32 +7,37 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
-                darkMode: 'class',
+                darkMode: "class",
                 theme: {
                     extend: {
                         colors: {
                             neutral: {
-                                50: '#fafafa',
-                                100: '#f5f5f5',
-                                200: '#e5e5e5',
-                                300: '#d4d4d4',
-                                400: '#a3a3a3',
-                                500: '#737373',
-                                600: '#525252',
-                                700: '#404040',
-                                800: '#262626',
-                                900: '#171717',
-                                950: '#0a0a0a',
-                            }
-                        }
-                    }
-                }
-            }
+                                50: "#fafafa",
+                                100: "#f5f5f5",
+                                200: "#e5e5e5",
+                                300: "#d4d4d4",
+                                400: "#a3a3a3",
+                                500: "#737373",
+                                600: "#525252",
+                                700: "#404040",
+                                800: "#262626",
+                                900: "#171717",
+                                950: "#0a0a0a",
+                            },
+                        },
+                    },
+                },
+            };
         </script>
         <style>
             body {
-                font-family: system-ui, -apple-system, sans-serif;
-                transition: background-color 0.3s ease, color 0.3s ease;
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease;
             }
             .plan-card {
                 transition: all 0.2s ease;
@@ -69,13 +74,21 @@
             }
         </style>
     </head>
-    <body class="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 p-4 transition-colors">
+    <body
+        class="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 p-4 transition-colors"
+    >
         <div class="max-w-4xl mx-auto">
             <!-- Header with Theme Toggle -->
             <div class="flex justify-between items-center mb-8">
                 <div class="text-center flex-1">
-                    <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">Byte Payments</h1>
-                    <p class="text-neutral-600 dark:text-neutral-400">by The Byte Array</p>
+                    <h1
+                        class="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2"
+                    >
+                        Byte Payments
+                    </h1>
+                    <p class="text-neutral-600 dark:text-neutral-400">
+                        by The Byte Array
+                    </p>
                 </div>
                 <button
                     id="themeToggle"
@@ -87,27 +100,153 @@
             </div>
 
             <!-- Email Input -->
-            <div class="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800 p-6 mb-6 max-w-md mx-auto">
-                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Email Address</label>
+            <div
+                class="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800 p-6 mb-6 max-w-md mx-auto"
+            >
+                <label
+                    class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
+                    >Email Address</label
+                >
                 <input
                     type="email"
                     id="userEmail"
                     placeholder="your@email.com"
                     class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400"
                 />
-                <div id="emailError" class="mt-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded hidden">
+                <div
+                    id="emailError"
+                    class="mt-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded hidden"
+                >
                     Please enter a valid email address
                 </div>
             </div>
 
             <!-- Plans Section -->
             <div class="mb-8">
-                <div id="plansContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+                <div
+                    id="plansContainer"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto"
+                >
                     <!-- Loading -->
                     <div class="col-span-full flex justify-center py-8">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <div
+                            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+                        ></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Email Verification Step -->
+            <div
+                id="verificationStep"
+                class="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800 p-6 mb-6 max-w-md mx-auto hidden"
+            >
+                <div class="text-center mb-6">
+                    <div
+                        class="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center"
+                    >
+                        <svg
+                            class="w-8 h-8 text-blue-600 dark:text-blue-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <h3
+                        class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2"
+                    >
+                        Check your email
+                    </h3>
+                    <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                        We've sent a 6-digit verification code to<br />
+                        <span
+                            id="verificationEmail"
+                            class="font-medium text-neutral-900 dark:text-neutral-100"
+                        ></span>
+                    </p>
+                </div>
+
+                <!-- OTP Input -->
+                <div class="flex justify-center gap-2 mb-6">
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="0"
+                    />
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="1"
+                    />
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="2"
+                    />
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="3"
+                    />
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="4"
+                    />
+                    <input
+                        type="text"
+                        class="otp-input w-12 h-12 text-center text-xl font-semibold border border-neutral-300 dark:border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                        maxlength="1"
+                        data-index="5"
+                    />
+                </div>
+
+                <div class="space-y-3">
+                    <button
+                        id="verifyCodeBtn"
+                        class="btn-primary w-full px-4 py-3 rounded-md font-medium text-white disabled:opacity-50"
+                        disabled
+                    >
+                        <span id="verifyText">Verify Code</span>
+                        <span
+                            id="verifySpinner"
+                            class="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-white hidden"
+                        ></span>
+                    </button>
+
+                    <div class="flex items-center justify-center gap-4 text-sm">
+                        <button
+                            id="resendCodeBtn"
+                            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                        >
+                            Resend code
+                        </button>
+                        <span class="text-neutral-400">•</span>
+                        <button
+                            id="backToEmailBtn"
+                            class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 font-medium"
+                        >
+                            Change email
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    id="verificationError"
+                    class="mt-4 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-md hidden text-center"
+                ></div>
             </div>
 
             <!-- Continue Button -->
@@ -118,7 +257,10 @@
                     class="btn-primary px-6 py-3 rounded-md font-medium text-white min-w-48"
                 >
                     <span id="continueText">Select a Plan</span>
-                    <span id="continueSpinner" class="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-white hidden"></span>
+                    <span
+                        id="continueSpinner"
+                        class="ml-2 animate-spin rounded-full h-4 w-4 border-b-2 border-white hidden"
+                    ></span>
                 </button>
             </div>
         </div>
@@ -129,7 +271,9 @@
             class="fixed bottom-4 right-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-900 dark:text-neutral-100 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"
         >
             <div class="flex items-center gap-2">
-                <span id="toastIcon" class="text-blue-600 dark:text-blue-400">ℹ</span>
+                <span id="toastIcon" class="text-blue-600 dark:text-blue-400"
+                    >ℹ</span
+                >
                 <span id="toastMessage">Message</span>
             </div>
         </div>
@@ -139,49 +283,55 @@
             let plans = [];
             let currencies = [];
             let isDarkMode = false;
+            let verificationToken = null;
 
             // Theme management
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
+            const themeToggle = document.getElementById("themeToggle");
+            const themeIcon = document.getElementById("themeIcon");
 
             function initTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
+                const savedTheme = localStorage.getItem("theme");
+                if (
+                    savedTheme === "dark" ||
+                    (!savedTheme &&
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches)
+                ) {
+                    document.documentElement.classList.add("dark");
                     isDarkMode = true;
-                    themeIcon.textContent = '☀️';
+                    themeIcon.textContent = "☀️";
                 } else {
-                    document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.remove("dark");
                     isDarkMode = false;
-                    themeIcon.textContent = '🌙';
+                    themeIcon.textContent = "🌙";
                 }
             }
 
             function toggleTheme() {
                 isDarkMode = !isDarkMode;
                 if (isDarkMode) {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                    themeIcon.textContent = '☀️';
+                    document.documentElement.classList.add("dark");
+                    localStorage.setItem("theme", "dark");
+                    themeIcon.textContent = "☀️";
                 } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                    themeIcon.textContent = '🌙';
+                    document.documentElement.classList.remove("dark");
+                    localStorage.setItem("theme", "light");
+                    themeIcon.textContent = "🌙";
                 }
             }
 
             // DOM Elements
-            const userEmailInput = document.getElementById('userEmail');
-            const emailError = document.getElementById('emailError');
-            const plansContainer = document.getElementById('plansContainer');
-            const continueBtn = document.getElementById('continueBtn');
-            const continueText = document.getElementById('continueText');
-            const continueSpinner = document.getElementById('continueSpinner');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const toastIcon = document.getElementById('toastIcon');
+            const userEmailInput = document.getElementById("userEmail");
+            const emailError = document.getElementById("emailError");
+            const plansContainer = document.getElementById("plansContainer");
+            const continueBtn = document.getElementById("continueBtn");
+            const continueText = document.getElementById("continueText");
+            const continueSpinner = document.getElementById("continueSpinner");
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toastMessage");
+            const toastIcon = document.getElementById("toastIcon");
 
-            document.addEventListener('DOMContentLoaded', async () => {
+            document.addEventListener("DOMContentLoaded", async () => {
                 initTheme();
                 await loadData();
                 setupEventListeners();
@@ -189,33 +339,37 @@
 
             async function loadData() {
                 try {
-                    const [plansResponse, currenciesResponse] = await Promise.all([
-                        fetch('/api/v1/plans'),
-                        fetch('/api/v1/currencies')
-                    ]);
+                    const [plansResponse, currenciesResponse] =
+                        await Promise.all([
+                            fetch("/api/v1/plans"),
+                            fetch("/api/v1/currencies"),
+                        ]);
 
                     const plansData = await plansResponse.json();
                     const currenciesData = await currenciesResponse.json();
 
-                    if (plansData.status === 'ok') {
+                    if (plansData.status === "ok") {
                         plans = plansData.data;
                         renderPlans();
                     } else {
-                        showToast('Failed to load plans', 'error');
+                        showToast("Failed to load plans", "error");
                     }
 
-                    if (currenciesData.status === 'ok') {
+                    if (currenciesData.status === "ok") {
                         currencies = currenciesData.data;
                     }
                 } catch (error) {
-                    console.error('Error loading data:', error);
-                    showToast('Failed to load data', 'error');
-                    plansContainer.innerHTML = '<div class="col-span-full text-center text-neutral-500 dark:text-neutral-400 py-8">Failed to load plans. Please refresh the page.</div>';
+                    console.error("Error loading data:", error);
+                    showToast("Failed to load data", "error");
+                    plansContainer.innerHTML =
+                        '<div class="col-span-full text-center text-neutral-500 dark:text-neutral-400 py-8">Failed to load plans. Please refresh the page.</div>';
                 }
             }
 
             function renderPlans() {
-                plansContainer.innerHTML = plans.map(plan => `
+                plansContainer.innerHTML = plans
+                    .map(
+                        (plan) => `
                     <div class="plan-card bg-white dark:bg-neutral-900 rounded-lg p-4 border-2" data-plan-id="${plan.id}">
                         <div class="text-center">
                             <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">${plan.name}</h3>
@@ -233,22 +387,36 @@
                             <div class="w-5 h-5 border-2 border-neutral-300 dark:border-neutral-600 rounded-full plan-selector flex items-center justify-center"></div>
                         </div>
                     </div>
-                `).join('');
+                `,
+                    )
+                    .join("");
             }
 
             function setupEventListeners() {
-                userEmailInput.addEventListener('input', validateEmail);
-                userEmailInput.addEventListener('blur', validateEmail);
-                themeToggle.addEventListener('click', toggleTheme);
+                userEmailInput.addEventListener("input", validateEmail);
+                userEmailInput.addEventListener("blur", validateEmail);
+                themeToggle.addEventListener("click", toggleTheme);
 
-                plansContainer.addEventListener('click', (e) => {
-                    const planCard = e.target.closest('.plan-card');
+                plansContainer.addEventListener("click", (e) => {
+                    const planCard = e.target.closest(".plan-card");
                     if (planCard) {
                         selectPlan(planCard.dataset.planId);
                     }
                 });
 
-                continueBtn.addEventListener('click', createPayment);
+                continueBtn.addEventListener("click", startEmailVerification);
+
+                // Verification event listeners
+                document
+                    .getElementById("verifyCodeBtn")
+                    .addEventListener("click", verifyCode);
+                document
+                    .getElementById("resendCodeBtn")
+                    .addEventListener("click", resendCode);
+                document
+                    .getElementById("backToEmailBtn")
+                    .addEventListener("click", goBackToEmail);
+                setupOTPInputs();
             }
 
             function validateEmail() {
@@ -256,31 +424,36 @@
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
                 if (email && !emailRegex.test(email)) {
-                    emailError.classList.remove('hidden');
+                    emailError.classList.remove("hidden");
                     return false;
                 } else {
-                    emailError.classList.add('hidden');
+                    emailError.classList.add("hidden");
                     return true;
                 }
             }
 
             function selectPlan(planId) {
-                document.querySelectorAll('.plan-card').forEach(card => {
-                    card.classList.remove('selected');
-                    const selector = card.querySelector('.plan-selector');
-                    selector.style.background = 'transparent';
-                    selector.style.borderColor = isDarkMode ? '#525252' : '#d1d5db';
-                    selector.innerHTML = '';
+                document.querySelectorAll(".plan-card").forEach((card) => {
+                    card.classList.remove("selected");
+                    const selector = card.querySelector(".plan-selector");
+                    selector.style.background = "transparent";
+                    selector.style.borderColor = isDarkMode
+                        ? "#525252"
+                        : "#d1d5db";
+                    selector.innerHTML = "";
                 });
 
-                const selectedCard = document.querySelector(`[data-plan-id="${planId}"]`);
-                selectedCard.classList.add('selected');
-                const selector = selectedCard.querySelector('.plan-selector');
-                selector.style.background = '#3b82f6';
-                selector.style.borderColor = '#3b82f6';
-                selector.innerHTML = '<span class="text-white text-xs">✓</span>';
+                const selectedCard = document.querySelector(
+                    `[data-plan-id="${planId}"]`,
+                );
+                selectedCard.classList.add("selected");
+                const selector = selectedCard.querySelector(".plan-selector");
+                selector.style.background = "#3b82f6";
+                selector.style.borderColor = "#3b82f6";
+                selector.innerHTML =
+                    '<span class="text-white text-xs">✓</span>';
 
-                selectedPlan = plans.find(p => p.id === planId);
+                selectedPlan = plans.find((p) => p.id === planId);
                 updateContinueButton();
             }
 
@@ -293,78 +466,336 @@
                     continueText.textContent = `Continue with ${selectedPlan.name}`;
                 } else if (selectedPlan && !emailValid) {
                     continueBtn.disabled = true;
-                    continueText.textContent = 'Enter valid email';
+                    continueText.textContent = "Enter valid email";
                 } else if (emailValid && !selectedPlan) {
                     continueBtn.disabled = true;
-                    continueText.textContent = 'Select a plan';
+                    continueText.textContent = "Select a plan";
                 } else {
                     continueBtn.disabled = true;
-                    continueText.textContent = 'Select a plan';
+                    continueText.textContent = "Select a plan";
                 }
             }
 
-            async function createPayment() {
+            async function startEmailVerification() {
                 if (!selectedPlan || !validateEmail()) return;
-                
+
                 const email = userEmailInput.value.trim();
-                const trxCurrency = currencies.find(c => c.code === 'TRX');
-                
-                if (!trxCurrency) {
-                    showToast('TRX currency not available', 'error');
+
+                continueBtn.disabled = true;
+                continueText.textContent = "Sending Verification Code...";
+                continueSpinner.classList.remove("hidden");
+
+                try {
+                    const response = await fetch(
+                        "/api/v1/verification/send-code",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                            }),
+                        },
+                    );
+
+                    const data = await response.json();
+
+                    if (data.status === "ok") {
+                        showVerificationStep(email);
+                        showToast(
+                            "Verification code sent to your email",
+                            "success",
+                        );
+                    } else {
+                        showToast(
+                            data.message || "Failed to send verification code",
+                            "error",
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error sending verification code:", error);
+                    showToast("Failed to send verification code", "error");
+                } finally {
+                    continueBtn.disabled = false;
+                    continueText.textContent = `Continue with ${selectedPlan.name}`;
+                    continueSpinner.classList.add("hidden");
+                }
+            }
+
+            function setupOTPInputs() {
+                const otpInputs = document.querySelectorAll(".otp-input");
+
+                otpInputs.forEach((input, index) => {
+                    input.addEventListener("input", (e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        e.target.value = value;
+
+                        if (value && index < otpInputs.length - 1) {
+                            otpInputs[index + 1].focus();
+                        }
+
+                        updateVerifyButton();
+                    });
+
+                    input.addEventListener("keydown", (e) => {
+                        if (
+                            e.key === "Backspace" &&
+                            !e.target.value &&
+                            index > 0
+                        ) {
+                            otpInputs[index - 1].focus();
+                        }
+                        if (e.key === "ArrowLeft" && index > 0) {
+                            otpInputs[index - 1].focus();
+                        }
+                        if (
+                            e.key === "ArrowRight" &&
+                            index < otpInputs.length - 1
+                        ) {
+                            otpInputs[index + 1].focus();
+                        }
+                    });
+
+                    input.addEventListener("paste", (e) => {
+                        e.preventDefault();
+                        const pastedData = e.clipboardData
+                            .getData("text")
+                            .replace(/\D/g, "")
+                            .slice(0, 6);
+
+                        pastedData.split("").forEach((char, i) => {
+                            if (otpInputs[i]) {
+                                otpInputs[i].value = char;
+                            }
+                        });
+
+                        if (pastedData.length === 6) {
+                            otpInputs[5].focus();
+                        }
+
+                        updateVerifyButton();
+                    });
+                });
+            }
+
+            function updateVerifyButton() {
+                const otpInputs = document.querySelectorAll(".otp-input");
+                const verifyBtn = document.getElementById("verifyCodeBtn");
+                const allFilled = Array.from(otpInputs).every(
+                    (input) => input.value.length === 1,
+                );
+
+                verifyBtn.disabled = !allFilled;
+            }
+
+            function getOTPCode() {
+                const otpInputs = document.querySelectorAll(".otp-input");
+                return Array.from(otpInputs)
+                    .map((input) => input.value)
+                    .join("");
+            }
+
+            function clearOTPInputs() {
+                const otpInputs = document.querySelectorAll(".otp-input");
+                otpInputs.forEach((input) => (input.value = ""));
+                otpInputs[0].focus();
+                updateVerifyButton();
+            }
+
+            function showVerificationStep(email) {
+                document.getElementById("verificationEmail").textContent =
+                    email;
+                document
+                    .getElementById("verificationStep")
+                    .classList.remove("hidden");
+                document.getElementById("continueBtn").style.display = "none";
+                setTimeout(() => {
+                    document.querySelector(".otp-input").focus();
+                }, 100);
+            }
+
+            function goBackToEmail() {
+                document
+                    .getElementById("verificationStep")
+                    .classList.add("hidden");
+                document.getElementById("continueBtn").style.display = "block";
+                clearOTPInputs();
+                document
+                    .getElementById("verificationError")
+                    .classList.add("hidden");
+                verificationToken = null;
+            }
+
+            async function verifyCode() {
+                const email = userEmailInput.value.trim();
+                const code = getOTPCode();
+
+                if (code.length !== 6) {
+                    showVerificationError("Please enter a 6-digit code");
                     return;
                 }
 
-                continueBtn.disabled = true;
-                continueText.textContent = 'Creating Payment...';
-                continueSpinner.classList.remove('hidden');
+                const verifyBtn = document.getElementById("verifyCodeBtn");
+                const verifyText = document.getElementById("verifyText");
+                const verifySpinner = document.getElementById("verifySpinner");
+
+                verifyBtn.disabled = true;
+                verifyText.textContent = "Verifying...";
+                verifySpinner.classList.remove("hidden");
 
                 try {
-                    const response = await fetch('/api/v1/payments/create', {
-                        method: 'POST',
+                    const response = await fetch(
+                        "/api/v1/verification/verify-code",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                                code: code,
+                            }),
+                        },
+                    );
+
+                    const data = await response.json();
+
+                    if (data.status === "ok" && data.data.is_valid) {
+                        verificationToken = data.data.verification_token;
+                        showToast("Email verified successfully!", "success");
+                        createPayment();
+                    } else {
+                        showVerificationError(
+                            data.message || "Invalid verification code",
+                        );
+                        // Clear inputs on error
+                        clearOTPInputs();
+                    }
+                } catch (error) {
+                    console.error("Error verifying code:", error);
+                    showVerificationError("Failed to verify code");
+                    clearOTPInputs();
+                } finally {
+                    verifyBtn.disabled = false;
+                    verifyText.textContent = "Verify Code";
+                    verifySpinner.classList.add("hidden");
+                }
+            }
+
+            async function resendCode() {
+                const email = userEmailInput.value.trim();
+                const resendBtn = document.getElementById("resendCodeBtn");
+
+                resendBtn.disabled = true;
+                resendBtn.textContent = "Sending...";
+
+                try {
+                    const response = await fetch(
+                        "/api/v1/verification/send-code",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                email: email,
+                            }),
+                        },
+                    );
+
+                    const data = await response.json();
+
+                    if (data.status === "ok") {
+                        showToast("New verification code sent", "success");
+                        clearOTPInputs();
+                        document
+                            .getElementById("verificationError")
+                            .classList.add("hidden");
+                    } else {
+                        showToast(
+                            data.message || "Failed to resend code",
+                            "error",
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error resending code:", error);
+                    showToast("Failed to resend code", "error");
+                } finally {
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = "Resend code";
+                }
+            }
+
+            function showVerificationError(message) {
+                const errorEl = document.getElementById("verificationError");
+                errorEl.textContent = message;
+                errorEl.classList.remove("hidden");
+            }
+
+            async function createPayment() {
+                if (!selectedPlan || !validateEmail() || !verificationToken)
+                    return;
+
+                const email = userEmailInput.value.trim();
+                const trxCurrency = currencies.find((c) => c.code === "TRX");
+
+                if (!trxCurrency) {
+                    showToast("TRX currency not available", "error");
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/api/v1/payments/create", {
+                        method: "POST",
                         headers: {
-                            'Content-Type': 'application/json',
+                            "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
                             email: email,
                             plan_id: selectedPlan.id,
-                            currency_code: trxCurrency.code
-                        })
+                            currency_code: trxCurrency.code,
+                            verification_token: verificationToken,
+                        }),
                     });
 
                     const data = await response.json();
 
-                    if (data.status === 'ok' && data.data) {
+                    if (data.status === "ok" && data.data) {
                         window.location.href = `/pay?id=${data.data.payment_id}`;
                     } else {
-                        showToast(data.message || 'Failed to create payment', 'error');
+                        showToast(
+                            data.message || "Failed to create payment",
+                            "error",
+                        );
                     }
                 } catch (error) {
-                    console.error('Error creating payment:', error);
-                    showToast('Failed to create payment', 'error');
+                    console.error("Error creating payment:", error);
+                    showToast("Failed to create payment", "error");
                 } finally {
                     continueBtn.disabled = false;
-                    continueSpinner.classList.add('hidden');
+                    continueSpinner.classList.add("hidden");
                     updateContinueButton();
                 }
             }
 
-            userEmailInput.addEventListener('input', updateContinueButton);
+            userEmailInput.addEventListener("input", updateContinueButton);
 
-            function showToast(message, type = 'info') {
+            function showToast(message, type = "info") {
                 const icons = {
-                    success: '✓',
-                    error: '✗',
-                    info: 'ℹ'
+                    success: "✓",
+                    error: "✗",
+                    info: "ℹ",
                 };
 
                 toastIcon.textContent = icons[type] || icons.info;
                 toastMessage.textContent = message;
-                toast.classList.remove('translate-y-20', 'opacity-0');
-                toast.classList.add('translate-y-0', 'opacity-100');
-                
+                toast.classList.remove("translate-y-20", "opacity-0");
+                toast.classList.add("translate-y-0", "opacity-100");
+
                 setTimeout(() => {
-                    toast.classList.remove('translate-y-0', 'opacity-100');
-                    toast.classList.add('translate-y-20', 'opacity-0');
+                    toast.classList.remove("translate-y-0", "opacity-100");
+                    toast.classList.add("translate-y-20", "opacity-0");
                 }, 4000);
             }
         </script>

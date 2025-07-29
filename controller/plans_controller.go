@@ -9,12 +9,13 @@ import (
 )
 
 // GetPlansHandler godoc
-// @Summary      Get all plans
-// @Description  Returns a list of all subscription plans
+// @Summary      Get all subscription plans
+// @Description  Returns a list of all available subscription plans with their pricing and features
 // @Tags         plans
+// @Accept       json
 // @Produce      json
-// @Success      200  {object}  dto.ApiResponse
-// @Failure      404  {object}  dto.ApiResponse
+// @Success      200  {object}  dto.ApiResponse "Plans retrieved successfully"
+// @Failure      404  {object}  dto.ApiResponse "No plans found"
 // @Router       /api/v1/plans [get]
 func GetPlansHandler(ctx *fiber.Ctx) error {
 

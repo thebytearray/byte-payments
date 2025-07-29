@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Email Verification - BytePayments</title>
+        <style>
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Roboto,
+                    Oxygen,
+                    Ubuntu,
+                    Cantarell,
+                    sans-serif;
+                line-height: 1.6;
+                color: #e5e7eb;
+                margin: 0;
+                padding: 0;
+                background-color: #0f172a;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #1e293b;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+                border: 1px solid #334155;
+            }
+            .header {
+                background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+                color: white;
+                padding: 40px 30px;
+                text-align: center;
+                border-bottom: 1px solid #334155;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 32px;
+                font-weight: 700;
+                letter-spacing: -0.025em;
+            }
+            .header p {
+                margin: 8px 0 0 0;
+                opacity: 0.9;
+                font-size: 16px;
+                font-weight: 500;
+            }
+            .content {
+                padding: 40px 30px;
+            }
+            .verification-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 30px;
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            }
+            .verification-icon svg {
+                width: 40px;
+                height: 40px;
+                color: white;
+            }
+            .title {
+                text-align: center;
+                color: #f8fafc;
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0 0 16px 0;
+                letter-spacing: -0.025em;
+            }
+            .subtitle {
+                text-align: center;
+                color: #94a3b8;
+                font-size: 16px;
+                margin: 0 0 40px 0;
+                line-height: 1.5;
+            }
+            .verification-code {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 40px 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 2px solid #3b82f6;
+            }
+            .code-label {
+                color: #60a5fa;
+                font-size: 18px;
+                font-weight: 600;
+                margin: 0 0 20px 0;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .code-value {
+                color: #f8fafc;
+                font-size: 48px;
+                font-weight: 800;
+                margin: 0 0 20px 0;
+                font-family: "Courier New", monospace;
+                letter-spacing: 0.2em;
+                text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            }
+            .code-hint {
+                color: #94a3b8;
+                font-size: 14px;
+                margin: 0;
+                font-weight: 500;
+            }
+            .instructions {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                border: 1px solid #334155;
+            }
+            .instructions-title {
+                color: #60a5fa;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+            }
+            .instructions ul {
+                margin: 0;
+                padding-left: 20px;
+                color: #e2e8f0;
+            }
+            .instructions li {
+                margin-bottom: 12px;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .security-notice {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 1px solid #7f1d1d;
+            }
+            .security-title {
+                color: #f87171;
+                font-size: 18px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .security-text {
+                color: #fca5a5;
+                margin: 0;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .expiry-info {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 1px solid #d97706;
+            }
+            .expiry-title {
+                color: #f59e0b;
+                font-size: 18px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .expiry-text {
+                color: #fcd34d;
+                margin: 0;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .support-section {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 12px;
+                padding: 30px;
+                margin: 40px 0;
+                text-align: center;
+                border: 1px solid #2563eb;
+            }
+            .support-title {
+                color: #60a5fa;
+                font-size: 20px;
+                font-weight: 700;
+                margin: 0 0 12px 0;
+            }
+            .support-text {
+                color: #93c5fd;
+                margin: 0 0 20px 0;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .support-email {
+                color: #60a5fa;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                padding: 12px 24px;
+                background-color: #1e293b;
+                border-radius: 8px;
+                display: inline-block;
+                border: 2px solid #2563eb;
+                transition: all 0.2s ease;
+            }
+            .support-email:hover {
+                background-color: #2563eb;
+                color: white;
+            }
+            .footer {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                padding: 30px;
+                text-align: center;
+                color: #94a3b8;
+                font-size: 14px;
+                border-top: 1px solid #334155;
+            }
+            .footer a {
+                color: #60a5fa;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            .footer a:hover {
+                text-decoration: underline;
+            }
+            .divider {
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    #334155 50%,
+                    transparent 100%
+                );
+                margin: 30px 0;
+            }
+            @media (max-width: 640px) {
+                .container {
+                    margin: 0;
+                    border-radius: 0;
+                }
+                .content,
+                .header {
+                    padding: 30px 20px;
+                }
+                .code-value {
+                    font-size: 36px;
+                    letter-spacing: 0.1em;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>BytePayments</h1>
+                <p>by The Byte Array</p>
+            </div>
+
+            <div class="content">
+                <div class="verification-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                    </svg>
+                </div>
+
+                <h2 class="title">Email Verification Required</h2>
+                <p class="subtitle">
+                    To complete your payment, please verify your email address using the verification code below.
+                </p>
+
+                <div class="verification-code">
+                    <h3 class="code-label">Your Verification Code</h3>
+                    <div class="code-value">{{VERIFICATION_CODE}}</div>
+                    <p class="code-hint">Enter this code on the payment page to continue</p>
+                </div>
+
+                <div class="instructions">
+                    <h3 class="instructions-title">How to Use This Code</h3>
+                    <ul>
+                        <li>Return to the payment page where you started</li>
+                        <li>Enter the 6-digit code above in the verification field</li>
+                        <li>Click "Verify" to complete your payment</li>
+                        <li>Your payment will be processed once verification is complete</li>
+                    </ul>
+                </div>
+
+                <div class="expiry-info">
+                    <h3 class="expiry-title">⏰ Code Expires in 10 Minutes</h3>
+                    <p class="expiry-text">
+                        For security reasons, this verification code will expire automatically. 
+                        If you need a new code, you can request one on the payment page.
+                    </p>
+                </div>
+
+                <div class="security-notice">
+                    <h3 class="security-title">🔒 Security Notice</h3>
+                    <p class="security-text">
+                        Never share this verification code with anyone. BytePayments will never ask for this code via email, phone, or any other communication method.
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="support-section">
+                    <h3 class="support-title">Need Assistance?</h3>
+                    <p class="support-text">
+                        If you're having trouble with the verification process or have any questions, our support team is here to help.
+                    </p>
+                    <a
+                        href="mailto:contact@thebytearray.org"
+                        class="support-email"
+                        >Contact Support</a
+                    >
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>&copy; 2025 The Byte Array. All rights reserved.</p>
+                <p>
+                    This is an automated email. Please do not reply directly to
+                    this message.
+                </p>
+                <p>
+                    For support, contact
+                    <a href="mailto:contact@thebytearray.org"
+                        >contact@thebytearray.org</a
+                    >
+                </p>
+            </div>
+        </div>
+    </body>
+</html> 
