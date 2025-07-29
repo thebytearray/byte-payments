@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/thebytearray/BytePayments/model"
 	"gorm.io/gorm"
 )
@@ -11,6 +13,8 @@ type PaymentRepository interface {
 	FindCurrencyByCode(code string) (model.Currency, error)
 	CreateWallet(wallet model.Wallet) error
 	CreatePayment(payment model.Payment) error
+	FindPaymentById(id string) (model.Payment, error)
+	UpdatePayment(payment model.Payment) error
 }
 
 type paymentRepository struct {
@@ -19,6 +23,10 @@ type paymentRepository struct {
 
 func NewPaymentRepository(db *gorm.DB) PaymentRepository {
 	return &paymentRepository{db}
+}
+
+func (r *paymentRepository) UpdatePayment(payment model.Payment) error {
+	return r.db.Save(&payment).Error
 }
 
 func (r *paymentRepository) FindWalletByEmail(email string) (model.Wallet, error) {
@@ -47,4 +55,11 @@ func (r *paymentRepository) CreateWallet(wallet model.Wallet) error {
 
 func (r *paymentRepository) CreatePayment(payment model.Payment) error {
 	return r.db.Create(&payment).Error
+}
+
+func (r *paymentRepository) FindPaymentById(id string) (model.Payment, error) {
+	var payment model.Payment
+	res := r.db.Where("id = ?", id).Find(&payment)
+	log.Println(payment.CurrencyCode)
+	return payment, res.Error
 }

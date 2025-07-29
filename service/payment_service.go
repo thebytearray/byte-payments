@@ -16,6 +16,7 @@ import (
 
 type PaymentService interface {
 	CreatePayment(ctx context.Context, body dto.CreatePaymentRequest) (dto.CreatePaymentResponse, error)
+	CancelPaymentById(id string) dto.ApiResponse
 }
 
 type paymentService struct {
@@ -24,6 +25,32 @@ type paymentService struct {
 
 func NewPaymentService(repo repository.PaymentRepository) PaymentService {
 	return &paymentService{repo}
+}
+
+func (s *paymentService) CancelPaymentById(id string) dto.ApiResponse {
+	// Get the payment with id
+	payment, err := s.repo.FindPaymentById(id)
+	if err != nil {
+		return dto.NewError("Failed to find the payment.", err)
+	}
+
+	if payment.Status == model.Cancelled {
+		return dto.NewSuccess("Payment is already cancelled.", nil)
+	}
+
+	if payment.Status == model.Completed {
+		return dto.NewError("Payment already completed, can't cancel.", fmt.Errorf("payment cannot be cancelled: %w", errors.New("already completed")))
+	}
+
+	// Set status to Cancelled
+	payment.Status = model.Cancelled
+
+	// Update in DB
+	if err := s.repo.UpdatePayment(payment); err != nil {
+		return dto.NewError("Failed to cancel payment", err)
+	}
+
+	return dto.NewSuccess("Cancelled payment successfully.", nil)
 }
 
 func (s *paymentService) CreatePayment(ctx context.Context, body dto.CreatePaymentRequest) (dto.CreatePaymentResponse, error) {

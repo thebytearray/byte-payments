@@ -8,6 +8,14 @@ import (
 	"github.com/thebytearray/BytePayments/service"
 )
 
+// GetCurrenciesHandler godoc
+// @Summary      Get all available currencies
+// @Description  Returns a list of all available currencies
+// @Tags         currencies
+// @Produce      json
+// @Success      200  {object}  dto.ApiResponse
+// @Failure      404  {object}  dto.ApiResponse
+// @Router       /api/v1/currencies [get]
 func GetCurrenciesHandler(ctx *fiber.Ctx) error {
 	currencyService := service.NewCurrenciesService(repository.NewCurrenciesRepository(database.DB))
 	currencies, err := currencyService.GetCurrencies()

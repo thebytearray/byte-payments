@@ -15,6 +15,69 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/currencies": {
+            "get": {
+                "description": "Returns a list of all available currencies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "currencies"
+                ],
+                "summary": "Get all available currencies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/create": {
+            "post": {
+                "description": "Creates a payment in the database and returns payment details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "create"
+                ],
+                "summary": "Create a payment",
+                "parameters": [
+                    {
+                        "description": "Payment Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ApiResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans": {
             "get": {
                 "description": "Returns a list of all subscription plans",
@@ -58,6 +121,23 @@ const docTemplate = `{
                 },
                 "status_code": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.CreatePaymentRequest": {
+            "type": "object",
+            "required": [
+                "currency_code"
+            ],
+            "properties": {
+                "currency_code": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "plan_id": {
+                    "type": "string"
                 }
             }
         }

@@ -24,8 +24,11 @@ type Config struct {
 	TRX_HOT_WALLET_ADDRESS    string
 	TRX_WALLET_ENCRYPTION_KEY string
 	TRON_GRID_API_KEY         string
+	BINANCE_API_URL           string
 	TRON_GRPC_MAINNET         string
 	TRON_GRPC_TESTNET         string
+	TRON_GRID_API_URL_MAINNET string
+	TRON_GRID_API_URL_TESTNET string
 	//emailing config stuff
 	EMAIL_SMTP_HOST string
 	EMAIL_SMTP_PORT int
@@ -56,12 +59,14 @@ func NewConfig() {
 		APP_PORT: os.Getenv("APP_PORT"),
 		APP_URL:  os.Getenv("APP_URL"),
 
-		DATABASE_NAME: os.Getenv("DATABASE_NAME"),
-		DATABASE_HOST: os.Getenv("DATABASE_HOST"),
-		DATABASE_USER: os.Getenv("DATABASE_USER"),
-		DATABASE_PORT: os.Getenv("DATABASE_PORT"),
-		DATABASE_PASS: os.Getenv("DATABASE_PASS"),
-
+		DATABASE_NAME:             os.Getenv("DATABASE_NAME"),
+		DATABASE_HOST:             os.Getenv("DATABASE_HOST"),
+		DATABASE_USER:             os.Getenv("DATABASE_USER"),
+		DATABASE_PORT:             os.Getenv("DATABASE_PORT"),
+		DATABASE_PASS:             os.Getenv("DATABASE_PASS"),
+		BINANCE_API_URL:           os.Getenv("BINANCE_API_URL"),
+		TRON_GRID_API_URL_MAINNET: os.Getenv("TRON_GRID_API_URL_MAINNET"),
+		TRON_GRID_API_URL_TESTNET: os.Getenv("TRON_GRID_API_URL_TESTNET"),
 		TRX_HOT_WALLET_ADDRESS:    os.Getenv("TRX_HOT_WALLET_ADDRESS"),
 		TRX_WALLET_ENCRYPTION_KEY: os.Getenv("TRX_WALLET_ENCRYPTION_KEY"),
 		TRON_GRID_API_KEY:         os.Getenv("TRON_GRID_API_KEY"),

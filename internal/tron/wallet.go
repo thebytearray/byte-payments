@@ -102,7 +102,7 @@ func SendTRX(c *client.GrpcClient, from, to string, amountTRX float64, privateKe
 
 func ConvertUSDToTRX(usdAmount float64) (float64, error) {
 	// Fetch current TRX/USDT price from Binance
-	resp, err := http.Get("https://api.binance.com/api/v3/ticker/price?symbol=TRXUSDT")
+	resp, err := http.Get(config.Cfg.BINANCE_API_URL)
 	if err != nil {
 		return 0, fmt.Errorf("failed to fetch price: %w", err)
 	}
@@ -140,9 +140,9 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 	var tronGridURL string
 	switch env {
 	case "production":
-		tronGridURL = "https://api.trongrid.io/wallet/getaccountresource"
+		tronGridURL = config.Cfg.TRON_GRID_API_URL_MAINNET
 	case "development", "staging", "test":
-		tronGridURL = "https://api.shasta.trongrid.io/wallet/getaccountresource"
+		tronGridURL = config.Cfg.TRON_GRID_API_URL_TESTNET
 	default:
 		return 0, fmt.Errorf("unsupported APP_ENV: %s", config.Cfg.APP_ENV)
 	}

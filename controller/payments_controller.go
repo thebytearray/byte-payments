@@ -11,6 +11,15 @@ import (
 	"github.com/thebytearray/BytePayments/service"
 )
 
+// CreatePaymentHandler godoc
+// @Summary      Create a payment
+// @Description  Creates a payment in the database and returns payment details
+// @Tags         create
+// @Produce      json
+// @Param        request body dto.CreatePaymentRequest true "Payment Request"
+// @Success      200  {object}  dto.ApiResponse
+// @Failure      404  {object}  dto.ApiResponse
+// @Router       /api/v1/payments/create [post]
 func CreatePaymentHandler(ctx *fiber.Ctx) error {
 	var body dto.CreatePaymentRequest
 	//validate body struct
@@ -41,8 +50,11 @@ func CreatePaymentHandler(ctx *fiber.Ctx) error {
 }
 
 func CancelPaymentHandler(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	paymentService := service.NewPaymentService(repository.NewPaymentRepository(database.DB))
 
-	return nil
+	resp := paymentService.CancelPaymentById(id)
+	return ctx.JSON(resp)
 }
 
 func GetPaymentStatusHandler(ctx *fiber.Ctx) error {
