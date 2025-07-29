@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/thebytearray/BytePayments/dto"
+	"github.com/thebytearray/BytePayments/internal/database"
+	"github.com/thebytearray/BytePayments/repository"
 	"github.com/thebytearray/BytePayments/service"
 )
 
@@ -18,26 +18,13 @@ import (
 // @Router       /api/v1/plans [get]
 func GetPlansHandler(ctx *fiber.Ctx) error {
 
-	plans, err := service.GetPlans()
+	plansService := service.NewPlansService(repository.NewPlansRepository(database.DB))
+
+	plans, err := plansService.GetPlans()
 
 	if err != nil {
-		return ctx.JSON(
-			dto.ApiResponse{
-				Status:     "error",
-				StatusCode: http.StatusNotFound,
-				Message:    "Plan not found",
-				Data:       nil,
-				Error:      err.Error(),
-			},
-		)
+		return ctx.JSON(dto.NewError("Plan not found", err))
 	}
 
-	return ctx.JSON(
-		dto.ApiResponse{
-			Status:     "ok",
-			StatusCode: http.StatusOK,
-			Message:    "Plans fetched successfully",
-			Data:       plans,
-		},
-	)
+	return ctx.JSON(dto.NewSuccess("Plans fetched successfully.", plans))
 }

@@ -1,14 +1,23 @@
 package repository
 
 import (
-	"github.com/thebytearray/BytePayments/internal/database"
 	"github.com/thebytearray/BytePayments/model"
+	"gorm.io/gorm"
 )
 
-func GetPlans() ([]model.Plan, error) {
+type PlanRepository interface {
+	GetPlans() ([]model.Plan, error)
+}
+
+type planRepository struct {
+	db *gorm.DB
+}
+
+func NewPlansRepository(db *gorm.DB) PlanRepository {
+	return &planRepository{db}
+}
+func (r *planRepository) GetPlans() ([]model.Plan, error) {
 	var plans []model.Plan
-
-	result := database.DB.Find(&plans)
-
-	return plans, result.Error
+	res := r.db.Find(&plans)
+	return plans, res.Error
 }
