@@ -17,8 +17,8 @@ import (
 // @Tags         create
 // @Produce      json
 // @Param        request body dto.CreatePaymentRequest true "Payment Request"
-// @Success      200  {object}  dto.ApiResponse
-// @Failure      404  {object}  dto.ApiResponse
+// @Success      200  {object}  dto.PaymentResponse
+// @Failure      404  {object}  dto.PaymentResponse
 // @Router       /api/v1/payments/create [post]
 func CreatePaymentHandler(ctx *fiber.Ctx) error {
 	var body dto.CreatePaymentRequest
@@ -55,8 +55,8 @@ func CreatePaymentHandler(ctx *fiber.Ctx) error {
 // @Tags         cancel
 // @Param        id path string true "Payment ID"
 // @Produce      json
-// @Success      200  {object}  dto.ApiResponse
-// @Failure      404  {object}  dto.ApiResponse
+// @Success      200  {object}  dto.PaymentResponse
+// @Failure      404  {object}  dto.PaymentResponse
 // @Router       /api/v1/payments/{id}/cancel [patch]
 func CancelPaymentHandler(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
@@ -66,7 +66,19 @@ func CancelPaymentHandler(ctx *fiber.Ctx) error {
 	return ctx.JSON(resp)
 }
 
+// CancelPaymentHandler godoc
+// @Summary      Get Status of a payment
+// @Description  Gives the status of a payment
+// @Tags         status
+// @Param        id path string true "Payment ID"
+// @Produce      json
+// @Success      200  {object}  dto.PaymentResponse
+// @Failure      404  {object}  dto.PaymentResponse
+// @Router       /api/v1/payments/{id}/status [get]
 func GetPaymentStatusHandler(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	paymentService := service.NewPaymentService(repository.NewPaymentRepository(database.DB))
 
-	return nil
+	resp := paymentService.CheckPaymentStatusById(id)
+	return ctx.JSON(resp)
 }

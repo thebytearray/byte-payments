@@ -66,13 +66,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
+                            "$ref": "#/definitions/dto.PaymentResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
+                            "$ref": "#/definitions/dto.PaymentResponse"
                         }
                     }
                 }
@@ -101,13 +101,48 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
+                            "$ref": "#/definitions/dto.PaymentResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/dto.ApiResponse"
+                            "$ref": "#/definitions/dto.PaymentResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/{id}/status": {
+            "get": {
+                "description": "Gives the status of a payment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "status"
+                ],
+                "summary": "Get Status of a payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaymentResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaymentResponse"
                         }
                     }
                 }
@@ -175,6 +210,45 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "dto.PaymentResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "string"
+                },
+                "plan_id": {
+                    "type": "string"
+                },
+                "qr_image": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.PaymentStatus"
+                },
+                "trx_amount": {
+                    "type": "number"
+                },
+                "trx_wallet_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaymentStatus": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "completed",
+                "cancelled"
+            ],
+            "x-enum-varnames": [
+                "Pending",
+                "Completed",
+                "Cancelled"
+            ]
         }
     }
 }`

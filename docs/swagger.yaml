@@ -22,6 +22,33 @@ definitions:
     required:
     - currency_code
     type: object
+  dto.PaymentResponse:
+    properties:
+      email:
+        type: string
+      payment_id:
+        type: string
+      plan_id:
+        type: string
+      qr_image:
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentStatus'
+      trx_amount:
+        type: number
+      trx_wallet_address:
+        type: string
+    type: object
+  model.PaymentStatus:
+    enum:
+    - pending
+    - completed
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - Pending
+    - Completed
+    - Cancelled
 info:
   contact: {}
 paths:
@@ -57,14 +84,37 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ApiResponse'
+            $ref: '#/definitions/dto.PaymentResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ApiResponse'
+            $ref: '#/definitions/dto.PaymentResponse'
       summary: Cancel a created payment
       tags:
       - cancel
+  /api/v1/payments/{id}/status:
+    get:
+      description: Gives the status of a payment
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaymentResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.PaymentResponse'
+      summary: Get Status of a payment
+      tags:
+      - status
   /api/v1/payments/create:
     post:
       description: Creates a payment in the database and returns payment details
@@ -81,11 +131,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ApiResponse'
+            $ref: '#/definitions/dto.PaymentResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ApiResponse'
+            $ref: '#/definitions/dto.PaymentResponse'
       summary: Create a payment
       tags:
       - create

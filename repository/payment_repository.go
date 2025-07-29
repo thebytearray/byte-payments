@@ -59,7 +59,7 @@ func (r *paymentRepository) CreatePayment(payment model.Payment) error {
 
 func (r *paymentRepository) FindPaymentById(id string) (model.Payment, error) {
 	var payment model.Payment
-	res := r.db.Where("id = ?", id).Find(&payment)
+	res := r.db.Preload("Wallet").Where("id = ?", id).Find(&payment)
 	log.Println(payment.CurrencyCode)
 	return payment, res.Error
 }
