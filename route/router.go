@@ -10,25 +10,17 @@ import (
 func NewRouter() *fiber.App {
 	app := fiber.New()
 
-	// Frontend routes
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Redirect("/plans")
-	})
-
-	app.Get("/plans", func(c *fiber.Ctx) error {
-		return c.SendFile("./static/select-plan.html")
-	})
-
-	app.Get("/select-plan", func(c *fiber.Ctx) error {
-		return c.Redirect("/plans")
-	})
-
-	app.Get("/pay", func(c *fiber.Ctx) error {
-		return c.SendFile("./static/pay.html")
-	})
-
-	app.Get("/payment.html", func(c *fiber.Ctx) error {
-		return c.Redirect("/pay")
+	// Enable CORS for frontend integration
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Access-Control-Allow-Origin", "*")
+		c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+		c.Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
+		
+		if c.Method() == "OPTIONS" {
+			return c.SendStatus(200)
+		}
+		
+		return c.Next()
 	})
 
 	// API routes - Swagger UI only in development mode

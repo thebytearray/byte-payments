@@ -197,21 +197,22 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 	// Calculate bandwidth fee
 	bandwidthFeeSun := chargeableBandwidth * sunPerBandwidthUnit
 
-	// Energy fee estimation (for simple TRX transfer, energy usage is minimal but add safety)
-	energyFeeSun := int64(10_000) // ~0.01 TRX for potential energy costs
+	// Energy fee estimation (for simple TRX transfer, energy usage is minimal)
+	energyFeeSun := int64(5_000) // ~0.005 TRX for energy costs
 
-	// Total estimated fee
+	// Total transaction fee (exact calculation to leave 0 balance)
 	totalFeeSun := bandwidthFeeSun + energyFeeSun
 
-	// Increased safety buffer significantly to prevent insufficient balance errors
-	const safetyBuffer = int64(50_000)
+	// Add minimal buffer only to ensure transaction success
+	const minimalBuffer = int64(1_000) // 0.001 TRX minimal buffer
 
-	totalCostSun := totalFeeSun + safetyBuffer
+	totalCostSun := totalFeeSun + minimalBuffer
 
 	if balanceSun <= totalCostSun {
 		return 0, ErrInsufficientBalance
 	}
 
+	// Calculate transferable amount to leave exactly 0 balance after transaction
 	transferableSun := balanceSun - totalCostSun
 
 	if transferableSun <= 0 {
@@ -221,8 +222,8 @@ func GetTransferableAmount(walletAddress string, balanceTRX float64) (float64, e
 	// Convert back to TRX with proper precision handling
 	transferableTRX := float64(transferableSun) / 1_000_000
 
-	// Use ceiling instead of floor to ensure we don't try to send more than calculated
 	// Round down to 6 decimal places to match TRX precision
+	// This ensures we transfer the maximum possible amount while leaving ~0 balance
 	return math.Floor(transferableTRX*1e6) / 1e6, nil
 }
 

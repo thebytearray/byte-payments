@@ -67,7 +67,7 @@ func (s *paymentService) ProcessPendingPayments() {
 
 		if receivedRatio >= completionThreshold || absDiff <= tolerance {
 			// Payment amount is sufficient, but don't mark as completed yet
-			log.Printf("Payment %s has sufficient funds: received %.6f TRX (expected %.6f)", p.ID, balance, p.AmountTRX)
+			log.Printf("Payment %s has sufficient funds: received %.2f TRX (expected %.2f)", p.ID, balance, p.AmountTRX)
 			
 			// Try to sweep funds first
 			err = s.sweepFunds(p)
@@ -96,7 +96,7 @@ func (s *paymentService) ProcessPendingPayments() {
 			if balance > p.AmountTRX+tolerance {
 				// Overpaid
 				overpaidAmount := balance - p.AmountTRX
-				log.Printf("Payment %s overpaid by %.6f TRX", p.ID, overpaidAmount)
+				log.Printf("Payment %s overpaid by %.2f TRX", p.ID, overpaidAmount)
 				
 				err = emailService.SendOverpaymentEmail(p, p.Plan, overpaidAmount)
 				if err != nil {
@@ -116,7 +116,7 @@ func (s *paymentService) ProcessPendingPayments() {
 		} else if balance > 0 && balance < p.AmountTRX-tolerance {
 			// Underpaid - check if we haven't already sent an email recently
 			remainingAmount := p.AmountTRX - balance
-			log.Printf("Payment %s underpaid: received %.6f TRX, remaining %.6f TRX", p.ID, balance, remainingAmount)
+			log.Printf("Payment %s underpaid: received %.2f TRX, remaining %.2f TRX", p.ID, balance, remainingAmount)
 			
 			// Only send underpayment email if we have received some payment and haven't sent one recently
 			// You might want to add a field to track when the last email was sent to avoid spam
@@ -133,7 +133,7 @@ func (s *paymentService) ProcessPendingPayments() {
 				}
 			}
 		} else {
-			log.Printf("Payment %s still pending: received %.6f TRX (%.2f%% of expected)", p.ID, balance, receivedRatio*100)
+			log.Printf("Payment %s still pending: received %.2f TRX (%.2f%% of expected)", p.ID, balance, receivedRatio*100)
 		}
 
 	}
@@ -168,7 +168,7 @@ func (s *paymentService) sweepFunds(payment model.Payment) error {
 		return fmt.Errorf("failed to send trx: %w", err)
 	}
 
-	log.Printf("Swept %.6f TRX from %s to main wallet. TxID: %s", transferable, payment.Wallet.WalletAddress, txID)
+	log.Printf("Swept %.2f TRX from %s to main wallet. TxID: %s", transferable, payment.Wallet.WalletAddress, txID)
 	return nil
 }
 

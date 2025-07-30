@@ -87,7 +87,7 @@ func (e *emailService) SendPaymentCompletionEmail(payment model.Payment, plan mo
 	replacements := map[string]string{
 		"{{PAYMENT_ID}}":      payment.ID,
 		"{{PLAN_NAME}}":       planName,
-		"{{AMOUNT_PAID}}":     fmt.Sprintf("%.6f", payment.PaidAmountTRX),
+		"{{AMOUNT_PAID}}":     fmt.Sprintf("%.2f", payment.PaidAmountTRX),
 		"{{USER_EMAIL}}":      payment.UserEmail,
 		"{{COMPLETION_DATE}}": completionDate,
 	}
@@ -129,9 +129,9 @@ func (e *emailService) SendUnderpaymentEmail(payment model.Payment, plan model.P
 	replacements := map[string]string{
 		"{{PAYMENT_ID}}":       payment.ID,
 		"{{PLAN_NAME}}":        planName,
-		"{{REQUIRED_AMOUNT}}":  fmt.Sprintf("%.6f", payment.AmountTRX),
-		"{{PAID_AMOUNT}}":      fmt.Sprintf("%.6f", payment.PaidAmountTRX),
-		"{{REMAINING_AMOUNT}}": fmt.Sprintf("%.6f", remainingAmount),
+		"{{REQUIRED_AMOUNT}}":  fmt.Sprintf("%.2f", payment.AmountTRX),
+		"{{PAID_AMOUNT}}":      fmt.Sprintf("%.2f", payment.PaidAmountTRX),
+		"{{REMAINING_AMOUNT}}": fmt.Sprintf("%.2f", remainingAmount),
 		"{{WALLET_ADDRESS}}":   walletAddress,
 		"{{EXPIRY_TIME}}":      expiryTime,
 	}
@@ -165,11 +165,11 @@ func (e *emailService) SendOverpaymentEmail(payment model.Payment, plan model.Pl
 	replacements := map[string]string{
 		"{{PAYMENT_ID}}":       payment.ID,
 		"{{PLAN_NAME}}":        planName,
-		"{{REQUIRED_AMOUNT}}":  fmt.Sprintf("%.6f", payment.AmountTRX),
-		"{{AMOUNT_PAID}}":      fmt.Sprintf("%.6f", payment.PaidAmountTRX),
+		"{{REQUIRED_AMOUNT}}":  fmt.Sprintf("%.2f", payment.AmountTRX),
+		"{{AMOUNT_PAID}}":      fmt.Sprintf("%.2f", payment.PaidAmountTRX),
 		"{{USER_EMAIL}}":       payment.UserEmail,
 		"{{COMPLETION_DATE}}":  completionDate,
-		"{{OVERPAID_AMOUNT}}":  fmt.Sprintf("%.6f", overpaidAmount),
+		"{{OVERPAID_AMOUNT}}":  fmt.Sprintf("%.2f", overpaidAmount),
 	}
 
 	htmlContent := e.replaceTemplateVars(template, replacements)

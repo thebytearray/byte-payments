@@ -1,4 +1,95 @@
 basePath: /
+definitions:
+  dto.ApiResponse:
+    properties:
+      data: {}
+      error:
+        type: string
+      message:
+        type: string
+      status:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  dto.CreatePaymentRequest:
+    properties:
+      currency_code:
+        type: string
+      email:
+        type: string
+      plan_id:
+        type: string
+      verification_token:
+        type: string
+    required:
+    - currency_code
+    - verification_token
+    type: object
+  dto.PaymentResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      payment_id:
+        type: string
+      plan_id:
+        type: string
+      qr_image:
+        type: string
+      status:
+        $ref: '#/definitions/model.PaymentStatus'
+      trx_amount:
+        type: number
+      trx_wallet_address:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.SendVerificationCodeRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  dto.SendVerificationCodeResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.VerifyEmailCodeRequest:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+    required:
+    - code
+    - email
+    type: object
+  dto.VerifyEmailCodeResponse:
+    properties:
+      is_valid:
+        type: boolean
+      message:
+        type: string
+      verification_token:
+        type: string
+    type: object
+  model.PaymentStatus:
+    enum:
+    - pending
+    - completed
+    - cancelled
+    - expired
+    type: string
+    x-enum-varnames:
+    - Pending
+    - Completed
+    - Cancelled
+    - Expired
 host: localhost:8080
 info:
   contact:
@@ -11,7 +102,212 @@ info:
   termsOfService: http://swagger.io/terms/
   title: BytePayments API
   version: "1.0"
-paths: {}
+paths:
+  /api/v1/currencies:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all supported currencies with their exchange
+        rates and symbols
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Currencies retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "404":
+          description: No currencies found
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Get all available currencies
+      tags:
+      - currencies
+  /api/v1/payments/{id}/cancel:
+    patch:
+      consumes:
+      - application/json
+      description: Cancels an existing payment by its ID
+      parameters:
+      - description: Payment ID
+        example: '"payment_123456"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payment cancelled successfully
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "404":
+          description: Payment not found
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Cancel a payment
+      tags:
+      - payments
+  /api/v1/payments/{id}/status:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the current status of a payment by its ID
+      parameters:
+      - description: Payment ID
+        example: '"payment_123456"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payment status retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PaymentResponse'
+              type: object
+        "404":
+          description: Payment not found
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Get payment status
+      tags:
+      - payments
+  /api/v1/payments/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new payment with the specified plan and currency, generates
+        a TRX wallet address and QR code for payment
+      parameters:
+      - description: Payment creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payment created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PaymentResponse'
+              type: object
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "422":
+          description: Payment creation failed
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Create a new payment
+      tags:
+      - payments
+  /api/v1/plans:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all available subscription plans with their pricing
+        and features
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Plans retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "404":
+          description: No plans found
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Get all subscription plans
+      tags:
+      - plans
+  /api/v1/verification/send-code:
+    post:
+      consumes:
+      - application/json
+      description: Sends a verification code to the provided email address for account
+        verification
+      parameters:
+      - description: Email verification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendVerificationCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Verification code sent successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SendVerificationCodeResponse'
+              type: object
+        "400":
+          description: Invalid email format or request body
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "500":
+          description: Failed to send verification code
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Send email verification code
+      tags:
+      - verification
+  /api/v1/verification/verify-code:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the email verification code and returns a verification
+        token upon successful verification
+      parameters:
+      - description: Email verification code request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.VerifyEmailCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email verified successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ApiResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.VerifyEmailCodeResponse'
+              type: object
+        "400":
+          description: Invalid request body or verification failed
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+        "401":
+          description: Invalid verification code
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      summary: Verify email verification code
+      tags:
+      - verification
 schemes:
 - http
 - https
