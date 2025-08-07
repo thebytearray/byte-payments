@@ -11,6 +11,7 @@ import (
 
 	"github.com/segmentio/ksuid"
 	"github.com/skip2/go-qrcode"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/thebytearray/BytePayments/config"
 )
@@ -95,4 +96,13 @@ func GenerateQRCodeBase64(content string) (string, error) {
 
 func GenerateUniqueID() string {
 	return ksuid.New().String()
+}
+
+// HashPassword hashes a plain text password using bcrypt
+func HashPassword(password string) (string, error) {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashed), nil
 }

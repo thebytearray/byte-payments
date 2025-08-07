@@ -33,8 +33,11 @@ func main() {
 	//database.SeedDatabase()
 	//	log.Println(tron.ConvertUSDToTRX(10.00))
 	go cron.NewPaymentCron()
+	
+	// Seed admin before starting server
+	database.SeedAdmin()
+	
 	app := route.NewRouter()
 	app.Listen(":8080")
-	//
 
 }

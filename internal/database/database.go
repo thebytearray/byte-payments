@@ -48,13 +48,16 @@ func Connect() {
 	//
 	//
 	//
-	err = DB.AutoMigrate(&model.Currency{}, &model.Payment{}, &model.Plan{}, &model.Wallet{})
+	err = DB.AutoMigrate(&model.Currency{}, &model.Payment{}, &model.Plan{}, &model.Wallet{}, &model.Admin{})
 	if err != nil {
 		log.Printf("Failed to automigrate database, %v", err)
 	}
 }
 
 func SeedDatabase() {
+
+	// Seed default admin
+	SeedAdmin()
 
 	plans := []*model.Plan{
 		{
@@ -98,5 +101,36 @@ func SeedDatabase() {
 
 	if currenciesRes.Error != nil {
 		log.Println(currenciesRes.Error)
+	}
+}
+
+func SeedAdmin() {
+	// Check if admin already exists
+	var count int64
+	DB.Model(&model.Admin{}).Count(&count)
+	if count > 0 {
+		log.Println("Admin already exists, skipping seeding")
+		return
+	}
+
+	// Hash default password
+	hashedPassword, err := util.HashPassword("admin123")
+	if err != nil {
+		log.Printf("Failed to hash admin password: %v", err)
+		return
+	}
+
+	admin := &model.Admin{
+		Username: "admin",
+		Email:    "admin@bytepayments.com",
+		Password: hashedPassword,
+		IsActive: true,
+	}
+
+	result := DB.Create(admin)
+	if result.Error != nil {
+		log.Printf("Failed to create admin: %v", result.Error)
+	} else {
+		log.Println("Default admin created successfully (username: admin, password: admin123)")
 	}
 }

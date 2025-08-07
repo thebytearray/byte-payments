@@ -20,6 +20,11 @@ type PaymentRepository interface {
 	FindAllPendingPayments() ([]model.Payment, error)
 	MarkAsCompletedById(id string, paidAmount float64, completedAt *time.Time) error
 	MarkAsExpiredById(id string) error
+	// Admin methods
+	GetAllPayments() ([]model.Payment, error)
+	DeletePayment(id string) error
+	GetAllWallets() ([]model.Wallet, error)
+	DeleteWallet(id string) error
 }
 
 type paymentRepository struct {
@@ -101,4 +106,25 @@ func (r *paymentRepository) FindPaymentById(id string) (model.Payment, error) {
 	res := r.db.Preload("Wallet").Where("id = ?", id).Find(&payment)
 	log.Println(payment.CurrencyCode)
 	return payment, res.Error
+}
+
+// Admin methods
+func (r *paymentRepository) GetAllPayments() ([]model.Payment, error) {
+	var payments []model.Payment
+	res := r.db.Preload("Wallet").Preload("Plan").Order("created_at DESC").Find(&payments)
+	return payments, res.Error
+}
+
+func (r *paymentRepository) DeletePayment(id string) error {
+	return r.db.Delete(&model.Payment{}, "id = ?", id).Error
+}
+
+func (r *paymentRepository) GetAllWallets() ([]model.Wallet, error) {
+	var wallets []model.Wallet
+	res := r.db.Order("created_at DESC").Find(&wallets)
+	return wallets, res.Error
+}
+
+func (r *paymentRepository) DeleteWallet(id string) error {
+	return r.db.Delete(&model.Wallet{}, "id = ?", id).Error
 }

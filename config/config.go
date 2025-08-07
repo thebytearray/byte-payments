@@ -36,6 +36,8 @@ type Config struct {
 	EMAIL_PASSWORD  string
 	EMAIL_FROM_NAME string
 	EMAIL_FROM_ADDR string
+	//admin auth
+	JWT_SECRET string
 }
 
 var Cfg *Config
@@ -79,6 +81,7 @@ func NewConfig() {
 		EMAIL_PASSWORD:  os.Getenv("EMAIL_PASSWORD"),
 		EMAIL_FROM_NAME: os.Getenv("EMAIL_FROM_NAME"),
 		EMAIL_FROM_ADDR: os.Getenv("EMAIL_FROM_ADDR"),
+		JWT_SECRET:      os.Getenv("JWT_SECRET"),
 	}
 
 }

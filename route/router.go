@@ -50,5 +50,30 @@ func NewRouter() *fiber.App {
 	v1.Get("/plans", controller.GetPlansHandler)
 	v1.Get("/currencies", controller.GetCurrenciesHandler)
 
+	//admin routes
+	//
+	v1_admin := v1.Group("/admin")
+	{
+		v1_admin.Post("/login", controller.AdminLoginHandler)
+		
+		// Protected admin routes
+		v1_admin.Use(controller.AdminAuthMiddleware())
+		v1_admin.Post("/change-password", controller.ChangePasswordHandler)
+		// Plans
+		v1_admin.Post("/plans", controller.CreatePlanHandler)
+		v1_admin.Put("/plans/:id", controller.UpdatePlanHandler)
+		v1_admin.Delete("/plans/:id", controller.DeletePlanHandler)
+		// Payments
+		v1_admin.Get("/payments", controller.GetAllPaymentsHandler)
+		v1_admin.Delete("/payments/:id", controller.DeletePaymentHandler)
+		// Wallets
+		v1_admin.Get("/wallets", controller.GetAllWalletsHandler)
+		v1_admin.Delete("/wallets/:id", controller.DeleteWalletHandler)
+		// Currencies
+		v1_admin.Post("/currencies", controller.CreateCurrencyHandler)
+		v1_admin.Put("/currencies/:code", controller.UpdateCurrencyHandler)
+		v1_admin.Delete("/currencies/:code", controller.DeleteCurrencyHandler)
+	}
+
 	return app
 }
